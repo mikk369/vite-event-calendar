@@ -1,0 +1,585 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#agility-calendar-wrapper {
+  font-family: 'rubik', sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  color: #555;
+  scroll-behavior: smooth;
+  padding: 3rem;
+  width: 90%;         
+  margin: 0 auto;     
+}
+
+.year-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.year-selector button {
+  font-size: 1.5em;
+  padding: 10px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.year-title {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* Container for the entire calendar */
+.calendar-container {
+  display: grid;
+  grid-template-columns: repeat(4, auto); 
+  gap: 3rem 3rem;
+  margin: 2rem;
+  justify-items: center; 
+  align-items: start; 
+  max-width: 120rem; 
+  margin-left: auto; 
+  margin-right: auto;
+}
+
+/* Each month container */
+.month-box {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Month title */
+.month-title {
+  background-color: #3a4d7a;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+  font-size: 18px;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  padding: 10px;
+  background-color: #f4f7fb;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 0 0 10px 10px;
+}
+
+.day-header {
+  font-weight: bold;
+  background-color: #e0e7ff;
+  padding: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.day-box {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  position: relative;
+  overflow: visible; /* Allow tooltip to overflow the box */
+  transition: transform 0.3s ease;
+}
+
+.day-box.booked {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+}
+
+.day-box.inactive {
+  color: #faf9f9;
+  background-color: #f9f9f9;
+  pointer-events: none; 
+}
+
+.blurred {
+  opacity: 0.5; /* Reduce opacity for blurred effect */
+  pointer-events: none; /* Make them non-interactive */
+  color: #ccc; /* Gray-out text */
+}
+.event-tooltip {
+  position: absolute;
+  bottom: 100%; /* Position the tooltip above the day */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 5px;
+  font-size: 0.8rem;
+  display: none; /* Hidden by default */
+  z-index: 100;
+  transition: opacity 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+.day-box.booked:hover .event-tooltip {
+  display: block;
+}
+
+.event-info p {
+  font-size: 0.8rem;
+  margin: 0;
+}
+.event-info {
+  text-wrap: wrap;
+}
+
+.event-info small {
+  font-size: 0.6rem;
+}
+
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+  z-index: 9999; /* Ensure the loading message is on top */
+}
+
+.loading {
+  font-size: 24px;
+}
+
+/* Modal header*/
+.modal-header {
+  display: flex;
+  justify-content: right;
+  padding: 0.5rem;
+}
+
+/* disables scrolling background content when modal is open  */
+body.ReactModal__Body--open {
+  overflow: hidden;
+}
+
+/* Style for the close button */
+.modal-close-button {
+  background-color: #3a4d7a;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 9px;
+  transition: background-color 0.3s, transform 0.2s; 
+}
+
+/* Hover effect for close button */
+.modal-close-button:hover {
+  background-color: #425685; 
+}
+
+/* Modal overlay styles */
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.5); 
+  position: fixed;
+  top: 0; 
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+/* Modal content styles */
+.modal-content {
+  width: 85%;  
+  margin: auto;  
+  padding: 2rem;
+  height: 95vh;  
+  background-color: white; 
+  border-radius: 8px;  
+  position: absolute; 
+  top: 2rem;  
+  left: 50%;  
+  transform: translateX(-50%);
+  /* modal content font styles  */
+  font-family: 'rubik', sans-serif;
+  line-height: 1;
+  color: #555;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.fullcalendar-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow-y: auto;
+  padding-bottom: 2rem;
+  height: 90vh; 
+}
+/* .fc-scrollgrid  .fc-scrollgrid-liquid {
+ height: 85vh;
+} */
+
+/* FULLCALENDAR STYLES  */
+/* Style the FullCalendar day grid */
+.fc-daygrid-day {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  position: relative;
+}
+
+/* Style the day number */
+.fc-day-number {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  line-height: 24px;
+  z-index: 2;
+}
+
+/* Hover effect for days */
+.fc-day:hover {
+  background-color: #e0e0e0;
+}
+
+/* Style for the calendar's header (the day names like Sun, Mon, etc.) */
+.fc-col-header {
+  background-color: #3a4d7a; /* Dark background for the header */
+  color: #fff; /* White text for the day names */
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Style the individual event boxes */
+.fc-event {
+  background-color: #5c99ff; /* Light blue for events */
+  color: white; /* White text inside events */
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 5px;
+}
+
+/* Add a hover effect on events */
+.fc-event:hover {
+  background-color: #4a89e1; /* Darker blue on hover */
+  cursor: pointer; /* Make it pointer cursor on hover */
+}
+
+/* Style the grid background color for weekdays */
+.fc-daygrid-day-top {
+  background-color: #f4f7fb; /* Light background for the day header */
+}
+
+
+
+
+
+
+/* SMALL CALENRAD */
+/* Container Style */
+.container {
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: 'Rubik', sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  color: #555;
+  scroll-behavior: smooth;
+}
+.calendar-wrapper {
+  display: flex;
+  justify-content: center;
+}
+/* Heading Style */
+.heading {
+  font-size: 2.4rem;
+  font-weight: bold;
+  text-align: center;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 2rem;
+}
+
+/* //CALENDAR\\ */
+.react-calendar {
+  width: 450px;
+  max-width: 100%;
+  background: white;
+  border-radius: 15px;
+  border: 1px solid rgb(209 213 219);
+  font-family: Manrope, Helvetica, sans-serif;
+  line-height: 1.125em;
+}
+.react-calendar--doubleView {
+  width: 700px;
+}
+.react-calendar--doubleView .react-calendar__viewContainer {
+  display: flex;
+  margin: -0.5em;
+}
+.react-calendar--doubleView .react-calendar__viewContainer > * {
+  width: 50%;
+  margin: 0.5em;
+}
+.react-calendar,
+.react-calendar *,
+.react-calendar *:before,
+.react-calendar *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Custom Navigation Styles */
+@media screen and (max-width: 500px) {
+  .react-calendar__navigation__prev2-button,
+  .react-calendar__navigation__prev-button {
+    display: none;
+  }
+  .react-calendar__navigation__label {
+    padding-left: 1rem;
+    text-align: left;
+  }
+}
+
+.react-calendar button {
+  margin: 0;
+  border: 0;
+  outline: none;
+}
+.react-calendar button:enabled:hover {
+  cursor: pointer;
+}
+.react-calendar__navigation {
+  display: flex;
+  height: 44px;
+  margin-bottom: 1em;
+}
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: none;
+}
+.react-calendar__navigation button:disabled {
+  visibility: hidden;
+  background-color: #f0f0f0;
+}
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #e6e6e6;
+}
+.react-calendar__month-view__weekdays {
+  font-weight: bold;
+  padding: 10px 0;
+  border-radius: 5px;
+  color: #2c3e50;
+}
+/* Each day should be round when hovered */
+.react-calendar__month-view__days__day {
+  padding: 5px;
+  background-clip: content-box !important;
+  border-radius: 15px !important;
+  color: #555;
+}
+
+.react-calendar__navigation__label__labelText {
+  font-weight: 500;
+  font-size: 1.05em;
+}
+.react-calendar__navigation__label {
+  pointer-events: none;
+}
+
+.react-calendar__navigation__arrow {
+  background-color: #fff;
+  padding: 7px;
+  background-clip: content-box !important;
+  border-radius: 50px;
+  font-size: 1.25em;
+}
+.react-calendar__navigation__arrow:hover {
+  background-color: rgb(107 114 128);
+}
+
+/* If you do not wish to show weekends */
+
+/* 
+.react-calendar__month-view__days > .react-calendar__tile,
+.react-calendar__month-view__weekdays__weekday {
+  flex-basis: 20% !important;
+  max-width: 20% !important;
+} 
+
+.react-calendar__month-view__weekdays__weekday:nth-child(6),
+.react-calendar__month-view__weekdays__weekday:nth-child(7) {
+  display: none !important;
+} 
+
+.react-calendar__month-view__days__day--weekend {
+  display: none !important;
+} 
+*/
+
+.react-calendar__month-view__weekdays__weekday {
+  padding: 0.75em;
+}
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+}
+.react-calendar__month-view__weekNumbers .react-calendar__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  font-weight: bold;
+}
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #b3b3b3;
+}
+.react-calendar__year-view .react-calendar__tile,
+.react-calendar__decade-view .react-calendar__tile,
+.react-calendar__century-view .react-calendar__tile {
+  padding: 2em 0.5em;
+}
+.react-calendar__tile {
+  aspect-ratio: 1/1;
+  max-width: 100%;
+  background: none;
+  text-align: center;
+}
+.react-calendar__tile:disabled {
+  background-color: #f0f0f0;
+  color: rgb(107 114 128);
+}
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: rgb(238 242 255);
+}
+.react-calendar__tile--now {
+  border-radius: 15px;
+  border: 2px solid #e3f2fd !important;
+  color: #3a4d7a;
+}
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background-color: rgb(238 242 255);
+}
+.react-calendar__tile--hasActive {
+  background: #e3f2fd;
+}
+.react-calendar__tile--hasActive:enabled:hover,
+.react-calendar__tile--hasActive:enabled:focus {
+  background: #e3f2fd;
+}
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: #e3f2fd;
+  color: white;
+}
+.react-calendar--selectRange .react-calendar__tile--hover {
+  background-color: rgb(238 242 255);
+}
+
+/* Error Container Style */
+.error-container {
+  margin: 20px 0;
+  background-color: #ffdddd;
+  border: 1px solid #ff8888;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+/* Error Text Style */
+.error-text {
+  color: #ff5555;
+  font-weight: bold;
+}
+
+/* Date Info Container Style */
+.date-info-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Text styling */
+.date-text {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* Input field styling */
+.input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+/* Input focus state */
+.input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Optional: Add placeholder text styling */
+.input::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+/* Button Style */
+.button {
+  background-color: #3a4d7a;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #3f527e;
+}
+
+
+  
