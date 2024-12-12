@@ -26,6 +26,7 @@ const BookingCalendar = () => {
           location: booking.location,
           start: booking.startDate,
           end: booking.endDate,
+          status: booking.status
         }));
         setEvents(eventBookings);
       } catch (error) {
@@ -107,13 +108,8 @@ const BookingCalendar = () => {
       daysArray.push(i);
     }
 
-    // Calculate how many empty days are needed to fill up the grid to 42 cells
-    // 6 rows × 7 columns = 42 cells
-    const totalCells = 42; 
-    const remainingCells = totalCells - daysArray.length;
-
     // Fill the remaining cells with empty days
-    for (let i = 1; i < remainingCells; i++) {
+    while (daysArray.length < 42) {
       daysArray.push(null);
     }
 
@@ -135,14 +131,20 @@ const BookingCalendar = () => {
 
   // Helper function to map events
   const mapEvents = (events, selectedMonth) => {
-    
     return events
-      .filter((event) => new Date(event.start).getMonth() === selectedMonth)
+      .filter((event) => event.status === 'BOOKED' && new Date(event.start).getMonth() === selectedMonth)
       .map((event) => ({
         ...event,
         end: adjustEventEnd(event.end),
       }));
   };
+
+  // determine the class name for a day-box 
+  const getDayBoxClass = (day, dayEvents) => {
+    if (!day) return 'inactive';
+    if(dayEvents.some((event) => event.status === 'BOOKED')) return 'booked';
+    return '';
+  }
 
   // Function to handle showing event information
   const showEventInfo = (events) => {
@@ -176,12 +178,6 @@ const BookingCalendar = () => {
       <div className="calendar-container">
         {/* Month Boxes */}
         {months.map((month, index) => {
-          const eventsForMonth = filterEventsByYear(events, selectedYear).filter((event) => {
-            const eventStart = new Date(event.start);
-            const eventEnd = new Date(event.end);
-            return eventStart.getMonth() === index || eventEnd.getMonth() === index;
-          });
-
           return (
             <div key={index} className="month-box" onClick={() => openModal(index)}>
               <h3 className="month-title">{month} {selectedYear}</h3>
@@ -196,24 +192,25 @@ const BookingCalendar = () => {
 
                 {/* Render the grid of days for the current month */}
                 {generateMonthGrid(index, selectedYear).map((day, i) => {
-                  const dayEvents = eventsForMonth.filter((event) => {
+                  const mappedEvents = mapEvents(events, index);
+                  const dayEvents = mappedEvents.filter((event) => {
                     const eventStart = new Date(event.start);
                     const eventEnd = new Date(event.end);
                     return (
                       (eventStart.getDate() <= day && eventEnd.getDate() >= day) && 
-                      eventStart.getMonth() === index &&
-                      eventEnd.getMonth() === index
+                      eventStart.getMonth() === index && eventEnd.getMonth() === index
                     );
                   });
 
                   return (
-                    <div key={i} className={`day-box ${day ? '' : 'inactive'} ${dayEvents.length ? 'booked' : ''}`}
-                      onMouseEnter={() => showEventInfo(dayEvents)} onMouseLeave={hideEventInfo}>
+                    <div key={i} className={`day-box ${getDayBoxClass(day, dayEvents)}`}
+                      onMouseEnter={() => showEventInfo(dayEvents)} 
+                      onMouseLeave={hideEventInfo}>
                       {day || ''} {/* Show day number */}
                       {dayEvents.length > 0 && (
                         <div className="event-tooltip">
-                          {dayEvents.map((event, index) => (
-                            <div key={index} className="event-tooltip-info">
+                          {dayEvents.map((event, i) => (
+                            <div key={i} className="event-tooltip-info">
                               <strong>{event.title}</strong>
                               <p>{event.description}</p>
                               <small>{event.location}</small>
