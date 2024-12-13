@@ -128,7 +128,7 @@
   display: none; /* Hidden by default */
   z-index: 100;
   transition: opacity 0.2s ease-in-out;
-  white-space: nowrap;
+  width: 20rem;
 }
 
 .day-box.booked:hover .event-tooltip {
