@@ -78,34 +78,33 @@ add_action('rest_api_init', 'register_booking_endpoints');
 // API endpoint callback functions GET bookings
 function get_all_bookings() {
     global $wpdb;
-    $table_name = 'bookings';
-    $results = $wpdb->get_results("SELECT * FROM $table_name");
+
+    $results = $wpdb->get_results("SELECT * FROM bookings");
     // Check if any results were returned
-    if ( empty( $results ) ) {
-        return new WP_Error( 'no_bookings', 'No bookings found', array( 'status' => 404 ) );
+    if (empty($results)) {
+        return new WP_Error('no_bookings', 'No bookings found', array('status' => 404));
     }
     return $results;
 }
 
 // API endpoint callback functions POST bookings
-function post_booking($request) {
+function post_booking($data) {
     global $wpdb;
-    $table_name = 'bookings';
 
     // Get the data from the request
-    $start_date = sanitize_text_field( $request['startDate'] );
-    $end_date = sanitize_text_field( $request['endDate'] );
-    $name = sanitize_text_field( $request['name'] );
-    $email = sanitize_email( $request['email'] );
-    $phone = sanitize_text_field( $request['phone'] );
-    $location = sanitize_text_field( $request['location'] );
-    $referee = sanitize_text_field( $request['referee'] );
-    $info = sanitize_textarea_field( $request['info'] );
-    $competitionClasses = sanitize_text_field( $request['competitionClasses'] );
-    $competitionType = sanitize_text_field( $request['competitionType'] );
+    $start_date = sanitize_text_field( $data['startDate'] );
+    $end_date = sanitize_text_field( $data['endDate'] );
+    $name = sanitize_text_field( $data['name'] );
+    $email = sanitize_email( $data['email'] );
+    $phone = sanitize_text_field( $data['phone'] );
+    $location = sanitize_text_field( $data['location'] );
+    $referee = sanitize_text_field( $data['referee'] );
+    $info = sanitize_textarea_field( $data['info'] );
+    $competitionClasses = sanitize_text_field( $data['competitionClasses'] );
+    $competitionType = sanitize_text_field( $data['competitionType'] );
 
     $wpdb->insert(
-        $table_name,
+        'bookings',
         array(
             'startDate' => $start_date,
             'endDate' => $end_date,
@@ -127,7 +126,7 @@ function post_booking($request) {
 function patch_booking_info($data) {
     global $wpdb;
 
-     // Get the data from the request
+     // Use get_params() to get request parameters
      $params = $data->get_params();
 
      $booking_id = $params['id'];  // Booking ID (ensure this is passed in the request)
