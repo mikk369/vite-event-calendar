@@ -42,7 +42,8 @@ const RegisterBookings = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       if (!startDate || !endDate || startDate > endDate) {
         console.log('Error occurred adding data!');
@@ -55,21 +56,23 @@ const RegisterBookings = () => {
           startDate: startDate.toISOString().split('T')[0],
           endDate: endDate.toISOString().split('T')[0],
         };
-        console.log(updatedFormData);
+
       // Send the data to WordPress REST API
       await axios.post(
         'https://fbtest.webcodes.ee/wp-json/bookings/v1/lisa-broneering', updatedFormData);
 
       setStartDate(null);
       setEndDate(null);
-      document.getElementById('name').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('phone').value = '';
-      document.getElementById('location').value = '';
-      document.getElementById('referee').value = '';
-      document.getElementById('info').value = '';
-      document.getElementById('competitionClasses').value = '';
-      document.getElementById('competitionType').value = '';
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        location: '',
+        referee: '',
+        info: '',
+        competitionClasses: '',
+        competitionType: '',
+      });
 
       console.log('Booking added successfully');
     } catch (error) {
@@ -99,7 +102,7 @@ const RegisterBookings = () => {
       {startDate && endDate && error && (
         <div className='error-container'>
           <h3 className='error-text'>
-            Start date cannot be greater than end date
+            Alguskuupäev ei saa olla suurem kui lõppkuupäev
           </h3>
         </div>
       )}
@@ -174,6 +177,7 @@ const RegisterBookings = () => {
           onChange={handleChange}
           className='input'
         >
+          <option value="" disabled>Valige võistlustüüp</option> {/* Default placeholder */}
           <option value="EKL eesti edukamate sportkoerte ja koerajuhtide võistlus">
             EKL eesti edukamate sportkoerte ja koerajuhtide võistlus
           </option>
@@ -183,8 +187,8 @@ const RegisterBookings = () => {
           <option value="klubimeistrivõistlus">Klubimeistrivõistlus</option>
           <option value="muu rahvuslik võistlus">Muu rahvuslik võistlus</option>
         </select>
-        <button onClick={handleSubmit} className='button'>
-          Submit
+        <button type="submit" className='button'>
+          Registreeri
         </button>
       </form>
       )}
