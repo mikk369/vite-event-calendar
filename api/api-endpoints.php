@@ -20,9 +20,9 @@ add_action('rest_api_init', 'add_cors_headers', 15);
 
 
 // registered endpoints 
-function register_bookings_endpoint() {
+function register_booking_endpoints() {
     // GET bookings 
-     register_rest_route(
+    register_rest_route(
         'bookings/v1',
         '/broneeringud',
         array(
@@ -31,30 +31,49 @@ function register_bookings_endpoint() {
             'permission_callback' => '__return_true' 
         )
     );
-    // POST bookings 
+    // POST booking 
     register_rest_route(
         'bookings/v1',
-        '/lisa-broneering',
+        '/lisa_broneering',
         array(
             'methods' => 'POST',
             'callback' => 'post_booking',
             'permission_callback' => '__return_true' 
         )
     );
-    // UPDATE bookings 
+    //PACTH booking INFO
     register_rest_route(
         'bookings/v1',
-        '/uuenda-broneeringut/(?P<id>\d+)',  // Including the booking ID in the URL
+        '/uuenda_broneeringu_infot/(?P<id>\d+)',
         array(
-            'methods' => 'POST',
+            'methods' => 'PATCH',
+            'callback' => 'patch_booking_info',
+            'permission_callback' => '__return_true'
+        )
+    );
+    // PACTH booking STATUS
+    register_rest_route(
+        'bookings/v1',
+        '/uuenda_staatust/(?P<id>\d+)',  // Including the booking ID in the URL
+        array(
+            'methods' => 'PATCH',
             'callback' => 'update_booking_status',
             'permission_callback' => '__return_true'
         )
     );
-    
+    //DELETE booking
+    register_rest_route(
+        'bookings/v1',
+        '/kustuta_broneering/(?P<id>\d+)', // URL with booking ID as a parameter
+        array(
+            'methods' => 'DELETE', // HTTP DELETE method
+            'callback' => 'delete_booking',
+            'permission_callback' => '__return_true', // Replace with the appropriate permission function
+        )
+    );
 }
 
-add_action('rest_api_init', 'register_bookings_endpoint');
+add_action('rest_api_init', 'register_booking_endpoints');
 
 // API endpoint callback functions GET bookings
 function get_all_bookings() {
@@ -82,11 +101,50 @@ function post_booking($request) {
     $location = sanitize_text_field( $request['location'] );
     $referee = sanitize_text_field( $request['referee'] );
     $info = sanitize_textarea_field( $request['info'] );
-    $competition_classes = sanitize_text_field( $request['competitionClasses'] );
-    $competition_type = sanitize_text_field( $request['competitionType'] );
+    $competitionClasses = sanitize_text_field( $request['competitionClasses'] );
+    $competitionType = sanitize_text_field( $request['competitionType'] );
 
     $wpdb->insert(
         $table_name,
+        array(
+            'startDate' => $start_date,
+            'endDate' => $end_date,
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'location' => $location,
+            'referee' => $referee,
+            'info' => $info,
+            'competitionclasses' => $competitionClasses,
+            'competitiontype' => $competitionType,
+            'status' => 'PENDING', // Default status
+        )
+    );
+    return new WP_REST_Response( array('message' => 'Booking added successfully' ), 200 );
+}
+
+// API endpoint callback function PATCH booking INFO
+function patch_booking_info($data) {
+    global $wpdb;
+
+     // Get the data from the request
+     $params = $data->get_params();
+
+     $booking_id = $params['id'];  // Booking ID (ensure this is passed in the request)
+     $start_date = sanitize_text_field( $params['startDate'] );  // Sanitize text input
+     $end_date = sanitize_text_field( $params['endDate'] );
+     $name = sanitize_text_field( $params['name'] );
+     $email = sanitize_email( $params['email'] );
+     $phone = sanitize_text_field( $params['phone'] );
+     $location = sanitize_text_field( $params['location'] );
+     $referee = sanitize_text_field( $params['referee'] );
+     $info = sanitize_textarea_field( $params['info'] );
+     $competitionClasses = sanitize_text_field( $params['competitionClasses'] );
+     $competitionType = sanitize_text_field( $params['competitionType'] );
+
+    // Update the booking details
+    $updated = $wpdb->update(
+        'bookings',  // Use prefix to ensure the correct table
         array(
             'startdate' => $start_date,
             'enddate' => $end_date,
@@ -96,42 +154,49 @@ function post_booking($request) {
             'location' => $location,
             'referee' => $referee,
             'info' => $info,
-            'competitionclasses' => $competition_classes,
-            'competitiontype' => $competition_type,
-            'status' => 'PENDING', // Default status
-        )
+            'competitionclasses' => $competitionClasses,
+            'competitiontype' => $competitionType,
+        ),
+        array('id' => $booking_id),  // Condition to identify the booking by ID
+        array(
+            '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'  // Format for each field
+        ),
+        array('%d')  // Format for the booking ID
     );
-    return new WP_REST_Response( array('message' => 'Booking added successfully' ), 200 );
+
+    if($updated === false) {
+        return new WP_Error('update_failed', 'Failed to update booking', array('status' => 500));
+    }
+
+    return new WP_REST_Response(array('status' => 'success', 'message' => 'Booking details updated'), 200);
 }
 
-// API endpoint callback functions UPDATE bookings
+// API endpoint callback functions UPDATE bookings STATUS
 function update_booking_status($data) {
     global $wpdb;
 
     // Get the booking ID and the new status from the request
-    $booking_id = $data['id'];
-    $new_status = $data['status'];  // 'ACCEPTED' or 'DENIED'
+    $params = $data->get_params();  // Use get_params() to get request parameters
 
-    // Validate the status
-    if (!in_array($new_status, ['ACCEPTED', 'DENIED'])) {
-        return new WP_Error( 'invalid_status', 'Invalid status value', array( 'status' => 400 ) );
-    }
+    $booking_id = $params['id'];
+    $new_status = 'BOOKED';
 
     // Check if the booking exists and has a PENDING status
     $booking = $wpdb->get_row(
         $wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}bookings WHERE id = %d AND status = 'PENDING'",
+            "SELECT * FROM bookings WHERE id = %d AND status = 'PENDING'",
             $booking_id
         )
     );
 
+    // If booking doesn't exist or it's not PENDING
     if (empty($booking)) {
         return new WP_Error('booking_not_found', 'Booking not found or already processed', array('status' => 404) );
     }
 
     // Update the status in the database
     $updated = $wpdb->update(
-        $wpdb->prefix . 'bookings',
+        'bookings',
         array( 'status' => $new_status ),  // Set the new status
         array( 'id' => $booking_id ),     // Condition to identify the booking by ID
         array( '%s' ),                   // Format for the new status (string)
@@ -139,8 +204,36 @@ function update_booking_status($data) {
     );
 
     if ($updated === false) {
-        return new WP_Error('update_failed', 'Failed to update booking status', array( 'status' => 500));
+        return new WP_Error('update_failed', 'Failed to update booking status', array('status' => 500));
     }
 
-    return rest_ensure_response(array('status' => 'success', 'message' => 'Booking status updated'));
+    return new WP_REST_Response(array('status' => ' success', 'message' => 'Booking status updated'), 200);
+}
+
+// Callback function to delete a booking
+function delete_booking($data) {
+    global $wpdb;
+
+    // Get the booking ID from the URL parameter
+    $booking_id = $data['id'];
+
+    // Check if the booking exists
+    $booking = $wpdb->get_row($wpdb->prepare("SELECT * FROM bookings WHERE id = %d", $booking_id));
+
+    if (empty($booking)) {
+        return new WP_Error('booking_not_found', 'Booking not found.', array('status' => 404));
+    }
+
+    // Delete the booking
+    $deleted = $wpdb->delete(
+        'bookings',
+        array('id' => $booking_id),
+        array('%d') // Format for the ID
+    );
+
+    if ($deleted === false) {
+        return new WP_Error('delete_failed', 'Failed to delete booking.', array('status' => 500));
+    }
+
+    return new WP_REST_Response(array('status' => 'success', 'message' => 'Booking deleted successfully'), 200);
 }
