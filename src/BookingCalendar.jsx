@@ -19,7 +19,7 @@ const BookingCalendar = () => {
   useEffect(() => {
     const fetchEventBookings = async () => {
       try {
-        const response = await axios.get('https://fbtest.webcodes.ee/wp-json/bookings/v1/broneeringud');
+        const response = await axios.get('https://agilityliit.ee/wp-json/bookings/v1/broneeringud');
         const eventBookings = response.data.map((booking) => ({
           title: booking.name,
           description: booking.info,
@@ -45,20 +45,6 @@ const BookingCalendar = () => {
     'Mai', 'Juuni', 'Juuli', 'August',
     'September', 'Oktoober', 'November', 'Detsember',
   ];
-
-   // Filter events by the selected year
-   const filterEventsByYear = (events, year) => {
-    return events.filter((event) => {
-      const eventStart = new Date(event.start);
-      const eventEnd = new Date(event.end);
-
-      return (
-        (eventStart.getFullYear() ===  year || eventEnd.getFullYear() === year) ||
-        (eventStart.getFullYear() ===  year -1 && eventEnd.getFullYear() === year) ||
-        (eventStart.getFullYear() ===  year && eventEnd.getFullYear() === year + 1)
-      )
-    });
-  };
 
    // Function to handle year navigation
    const changeYear = (increment) => {
@@ -132,7 +118,7 @@ const BookingCalendar = () => {
   // Helper function to map events
   const mapEvents = (events, selectedMonth) => {
     return events
-      .filter((event) => event.status === 'BOOKED' && new Date(event.start).getMonth() === selectedMonth)
+      .filter((event) => new Date(event.start).getMonth() === selectedMonth)
       .map((event) => ({
         ...event,
         end: adjustEventEnd(event.end),
@@ -142,9 +128,10 @@ const BookingCalendar = () => {
   // determine the class name for a day-box 
   const getDayBoxClass = (day, dayEvents) => {
     if (!day) return 'inactive';
-    if(dayEvents.some((event) => event.status === 'BOOKED')) return 'booked';
-    return '';
-  }
+    return dayEvents.some((event) => event.status === 'BOOKED')
+    ? 'booked' : dayEvents.some((event) => event.status === 'PENDING')
+    ? 'pending' : '';
+  };
 
   // Function to handle showing event information
   const showEventInfo = (events) => {
@@ -207,10 +194,13 @@ const BookingCalendar = () => {
                       onMouseEnter={() => showEventInfo(dayEvents)} 
                       onMouseLeave={hideEventInfo}>
                       {day || ''} {/* Show day number */}
+                      {dayEvents.some((event) => event.status === 'BOOKED') && dayEvents.some((event) => 
+                      event.status === 'PENDING') && (
+                        <div className='pending-dot'></div>)}
                       {dayEvents.length > 0 && (
                         <div className="event-tooltip">
                           {dayEvents.map((event, i) => (
-                            <div key={i} className="event-tooltip-info">
+                            <div key={i} className={`event-tooltip-info ${event.status.toLowerCase()}`}>
                               <strong>{event.title}</strong>
                               <p>{event.description}</p>
                               <small>{event.location}</small>

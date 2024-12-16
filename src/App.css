@@ -105,6 +105,12 @@
   color: #0d47a1;
 }
 
+.day-box.pending {
+  background-color: #fff9bf;
+  color: #0d47a1;
+  
+}
+
 .day-box.inactive {
   color: #faf9f9;
   background-color: #f9f9f9;
@@ -112,10 +118,22 @@
 }
 
 .blurred {
-  opacity: 0.5; /* Reduce opacity for blurred effect */
-  pointer-events: none; /* Make them non-interactive */
-  color: #ccc; /* Gray-out text */
+  opacity: 0.5;
+  pointer-events: none;
+  color: #ccc;
 }
+
+.pending-dot {
+  position: absolute;
+  top: 5px; 
+  right: 5px; 
+  width: 8px; 
+  height: 8px; 
+  background-color: #ffe608; 
+  border-radius: 50%; 
+  border: 2px solid #fff; 
+}
+
 .event-tooltip {
   position: absolute;
   bottom: 100%; /* Position the tooltip above the day */
@@ -123,7 +141,7 @@
   transform: translateX(-50%);
   background-color: #fff;
   border: 1px solid #ddd;
-  padding: 5px;
+  border-radius: 6px;
   font-size: 0.8rem;
   display: none; /* Hidden by default */
   z-index: 100;
@@ -133,6 +151,31 @@
 
 .day-box.booked:hover .event-tooltip {
   display: block;
+}
+
+.day-box.pending:hover .event-tooltip {
+  display: block;
+}
+
+/* Styles for individual events inside the tooltip */
+.event-tooltip-info {
+  padding: 5px;
+}
+
+.event-tooltip-info:not(:first-child) {
+  margin-top: 5px;
+}
+
+/* For booked events inside the tooltip */
+.event-tooltip-info.booked {
+  background-color: #e3f2fd;
+  color: #0d47a1; 
+}
+
+/* For pending events inside the tooltip */
+.event-tooltip-info.pending {
+  background-color: #fff9bf;
+  color: #0d47a1; 
 }
 
 .event-info p {
