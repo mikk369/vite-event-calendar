@@ -108,7 +108,11 @@
 .day-box.pending {
   background-color: #fff9bf;
   color: #0d47a1;
-  
+}
+
+.day-box.clubevent {
+  background-color: #c5ffcd;
+  color: #0d47a1;
 }
 
 .day-box.inactive {
@@ -123,15 +127,29 @@
   color: #ccc;
 }
 
-.pending-dot {
+.dot-container {
   position: absolute;
-  top: 5px; 
-  right: 5px; 
-  width: 8px; 
-  height: 8px; 
-  background-color: #ffe608; 
-  border-radius: 50%; 
-  border: 2px solid #fff; 
+  top: 3px;
+  right: 3px;
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 5px; /* Add spacing between dots */
+}
+
+.pending-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ffe608; /* Yellow color */
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.booked-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #e3f2fd; /* Blue color */
+  border-radius: 50%;
+  border: 2px solid #fff;
 }
 
 .event-tooltip {
@@ -145,15 +163,12 @@
   font-size: 0.8rem;
   display: none; /* Hidden by default */
   z-index: 100;
-  transition: opacity 0.2s ease-in-out;
   width: 20rem;
 }
 
-.day-box.booked:hover .event-tooltip {
-  display: block;
-}
-
-.day-box.pending:hover .event-tooltip {
+.day-box.booked:hover .event-tooltip,
+.day-box.pending:hover .event-tooltip,
+.day-box.clubevent:hover .event-tooltip {
   display: block;
 }
 
@@ -175,6 +190,11 @@
 /* For pending events inside the tooltip */
 .event-tooltip-info.pending {
   background-color: #fff9bf;
+  color: #0d47a1; 
+}
+/* For club events inside the tooltip */
+.event-tooltip-info.clubevent {
+  background-color: #c5ffcd;
   color: #0d47a1; 
 }
 
@@ -306,8 +326,8 @@ body.ReactModal__Body--open {
 
 /* Style for the calendar's header (the day names like Sun, Mon, etc.) */
 .fc-col-header {
-  background-color: #3a4d7a; /* Dark background for the header */
-  color: #fff; /* White text for the day names */
+  background-color: #3a4d7a;
+  color: #fff;
   text-align: center;
   padding: 10px 0;
   font-size: 14px;
@@ -317,27 +337,31 @@ body.ReactModal__Body--open {
 /* Style the individual event boxes */
 .fc-event {
   background-color: #5c99ff; /* Light blue for events */
-  color: white; /* White text inside events */
+  color: white; 
   border-radius: 5px;
   font-size: 12px;
   padding: 5px;
+  border: none;
 }
-
 /* Add a hover effect on events */
 .fc-event:hover {
-  background-color: #4a89e1; /* Darker blue on hover */
-  cursor: pointer; /* Make it pointer cursor on hover */
+  background-color: #4a89e1; 
+  cursor: pointer; 
+}
+
+.fc-event.fc-daygrid-event.pending {
+  background-color: #fff9bf;
+  --fc-event-text-color: #0d47a1;
+}
+
+.fc-event.pending:hover {
+  background-color: #fff8b7; 
 }
 
 /* Style the grid background color for weekdays */
 .fc-daygrid-day-top {
-  background-color: #f4f7fb; /* Light background for the day header */
+  background-color: #f4f7fb;
 }
-
-
-
-
-
 
 /* SMALL CALENRAD */
 /* Container Style */
@@ -467,25 +491,6 @@ body.ReactModal__Body--open {
 .react-calendar__navigation__arrow:hover {
   background-color: rgb(107 114 128);
 }
-
-/* If you do not wish to show weekends */
-
-/* 
-.react-calendar__month-view__days > .react-calendar__tile,
-.react-calendar__month-view__weekdays__weekday {
-  flex-basis: 20% !important;
-  max-width: 20% !important;
-} 
-
-.react-calendar__month-view__weekdays__weekday:nth-child(6),
-.react-calendar__month-view__weekdays__weekday:nth-child(7) {
-  display: none !important;
-} 
-
-.react-calendar__month-view__days__day--weekend {
-  display: none !important;
-} 
-*/
 
 .react-calendar__month-view__weekdays__weekday {
   padding: 0.75em;
