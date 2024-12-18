@@ -128,8 +128,9 @@ const BookingCalendar = () => {
   // determine the class name for a day-box 
   const getDayBoxClass = (day, dayEvents) => {
     if (!day) return 'inactive';
-    return dayEvents.some((event) => event.status === 'BOOKED')
-    ? 'booked' : dayEvents.some((event) => event.status === 'PENDING')
+    return dayEvents.some((event) => event.status === 'CLUBEVENT')
+    ? 'clubevent' : dayEvents.some((event) => event.status === 'BOOKED') ? 
+    'booked' : dayEvents.some((event) => event.status === 'PENDING')
     ? 'pending' : '';
   };
 
@@ -141,6 +142,39 @@ const BookingCalendar = () => {
   // Function to handle hiding event information
   const hideEventInfo = () => {
   };
+
+  //Function to render event dots to dayboxes
+  const renderDots = (dayEvents) => {
+    // Check if CLUBEVENT exists
+    const hasClubEvent = dayEvents.some((event) => event.status === 'CLUBEVENT');
+    const hasPending = dayEvents.some((event) => event.status === 'PENDING');
+    const hasBooked = dayEvents.some((event) => event.status === 'BOOKED');
+  
+    // Render dots based on conditions
+      return (
+        <>
+        <div className="dot-container">
+          {/* Show the yellow dot if there's a PENDING event and either BOOKED or CLUBEVENT exists */}
+          {(hasPending && (hasBooked || hasClubEvent)) && <div className="pending-dot"></div>} {/* Yellow dot */}
+
+          {/* Show the blue dot ONLY if there’s a BOOKED event AND a CLUBEVENT */}
+          {hasClubEvent && hasBooked && <div className="booked-dot"></div>} {/* Blue dot */}
+        </div>
+        </>
+      );
+  };
+  
+  //Give classnames inside fullCalendar events
+  const fullCalendarEventNames = (event) => {
+      if (event.event.extendedProps.status === 'BOOKED') {
+        return ['booked'];
+      } else if (event.event.extendedProps.status === 'CLUBEVENT') {
+        return ['clubevent'];
+      } else if (event.event.extendedProps.status === 'PENDING') {
+        return ['pending'];
+      }
+      return [];
+  }
 
   if (loading) {
     return (
@@ -194,9 +228,7 @@ const BookingCalendar = () => {
                       onMouseEnter={() => showEventInfo(dayEvents)} 
                       onMouseLeave={hideEventInfo}>
                       {day || ''} {/* Show day number */}
-                      {dayEvents.some((event) => event.status === 'BOOKED') && dayEvents.some((event) => 
-                      event.status === 'PENDING') && (
-                        <div className='pending-dot'></div>)}
+                      {renderDots(dayEvents)}
                       {dayEvents.length > 0 && (
                         <div className="event-tooltip">
                           {dayEvents.map((event, i) => (
@@ -238,6 +270,7 @@ const BookingCalendar = () => {
               initialDate={`${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-01`}
               events={mapEvents(events, selectedMonth)}
               dayHeaderContent={getDayHeader}
+              eventClassNames={fullCalendarEventNames}
               eventContent={(eventInfo) => (
                 <div className='event-info'>
                   <strong>{eventInfo.event.title}</strong>
