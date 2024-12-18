@@ -103,6 +103,9 @@ function post_booking($data) {
     $competitionClasses = sanitize_text_field( $data['competitionClasses'] );
     $competitionType = sanitize_text_field( $data['competitionType'] );
 
+    //Default set to PENDING if not CLUBEVENT
+    $status = isset($data['isClubEvent']) && $data['isClubEvent'] ? 'CLUBEVENT' : 'PENDING';
+
     $wpdb->insert(
         'bookings',
         array(
@@ -116,7 +119,7 @@ function post_booking($data) {
             'info' => $info,
             'competitionclasses' => $competitionClasses,
             'competitiontype' => $competitionType,
-            'status' => 'PENDING', // Default status
+            'status' => $status, // Set status either PENDING or CLUBEVENT
         )
     );
     return new WP_REST_Response( array('message' => 'Booking added successfully' ), 200 );
