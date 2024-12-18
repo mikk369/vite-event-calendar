@@ -354,8 +354,9 @@ body.ReactModal__Body--open {
   --fc-event-text-color: #0d47a1;
 }
 
-.fc-event.pending:hover {
-  background-color: #fff8b7; 
+.fc-event.clubevent {
+  background-color: #c5ffcd;
+  --fc-event-text-color: #0d47a1;
 }
 
 /* Style the grid background color for weekdays */
