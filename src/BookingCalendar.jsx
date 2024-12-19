@@ -192,9 +192,9 @@ const BookingCalendar = () => {
     <div id="agility-calendar-wrapper">
         {/* Year Navigation */}
         <div className="year-selector">
-          <button onClick={() => changeYear(-1)}>&lt;</button>
+          <button onClick={() => changeYear(-1)}><i class="fa-solid fa-arrow-left"></i></button>
           <span className="year-title">{selectedYear}</span>
-          <button onClick={() => changeYear(1)}>&gt;</button>
+          <button onClick={() => changeYear(1)}><i class="fa-solid fa-arrow-right"></i></button>
         </div>
       <div className="calendar-container">
         {/* Month Boxes */}
