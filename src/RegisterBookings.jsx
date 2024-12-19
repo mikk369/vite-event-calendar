@@ -59,7 +59,7 @@ const RegisterBookings = () => {
 
       // Send the data to WordPress REST API
       await axios.post(
-        'https://fbtest.webcodes.ee/wp-json/bookings/v1/lisa-broneering', updatedFormData);
+        'https://agilityliit.ee/wp-json/bookings/v1/lisa_broneering', updatedFormData);
 
       setStartDate(null);
       setEndDate(null);
@@ -114,12 +114,12 @@ const RegisterBookings = () => {
         <p className='date-text'>
           Selected End Date: {endDate && endDate.toDateString()}
         </p>
-        <p className='date-text'>Organisatsiooni nimi</p>
+        <p className='date-text'>Korraldav klubi</p>
         <input
           id="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Organisatsiooni nimi"
+          placeholder="Korraldav klubi"
           className='input'
         />
         <p className='date-text'>E-post</p>
