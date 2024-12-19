@@ -19,14 +19,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 3rem;
   margin-bottom: 20px;
 }
 
 .year-selector button {
-  font-size: 1.5em;
-  padding: 10px;
-  margin: 0 10px;
+  background-color: #f0f0f0; /* Light gray background */
+  border: 2px solid #ccc; /* Subtle border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px; /* Padding around the button */
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.year-selector button:hover {
+  background-color: #e0e0e0; /* Slightly darker background on hover */
+  transform: scale(1.1); /* Slight zoom on hover */
+}
+
+.year-selector button:active {
+  background-color: #d0d0d0; /* Even darker on click */
+  transform: scale(1); /* Reset scale on click */
+}
+
+/* Style for the icons inside buttons */
+.year-selector button i {
+  font-size: 16px; /* Adjust icon size */
+  color: #333; /* Dark gray color for the icon */
 }
 
 .year-title {
