@@ -10,7 +10,6 @@ Modal.setAppElement('#root');
 const BookingCalendar = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // const [hoveredEventInfo, setHoveredEventInfo] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -22,16 +21,20 @@ const BookingCalendar = () => {
         const response = await axios.get('https://agilityliit.ee/wp-json/bookings/v1/broneeringud');
         const eventBookings = response.data.map((booking) => ({
           title: booking.name,
-          description: booking.info,
-          location: booking.location,
           start: booking.startDate,
           end: booking.endDate,
+          referee: booking.referee,
+          competitionClasses: booking.competitionClasses,
+          competitionType: booking.competitionType,
+          clubCompetitionType: booking.clubCompetitionType,
+          description: booking.info,
+          location: booking.location,
           status: booking.status
         }));
         setEvents(eventBookings);
       } catch (error) {
         console.error('Error fetching bookings:', error);
-        setError('Failed to load posts and comments');
+        setError('Failed to load bookings');
       } finally {
         setLoading(false);
       }
@@ -234,7 +237,6 @@ const BookingCalendar = () => {
                           {dayEvents.map((event, i) => (
                             <div key={i} className={`event-tooltip-info ${event.status.toLowerCase()}`}>
                               <strong>{event.title}</strong>
-                              <p>{event.description}</p>
                               <small>{event.location}</small>
                             </div>
                           ))}
@@ -272,15 +274,30 @@ const BookingCalendar = () => {
               dayHeaderContent={getDayHeader}
               eventClassNames={fullCalendarEventNames}
               eventContent={(eventInfo) => (
-                <div className='event-info'>
-                  <strong>{eventInfo.event.title}</strong>
-                  <p>
-                    {eventInfo.event.extendedProps.description}
-                  </p>
-                  <small>
-                    {eventInfo.event.extendedProps.location}
-                  </small>
-                </div>
+                <a href='http://agilitykoer.ee/?controller=competitions' className="event-info-link" target="_blank">
+                  <div className='event-info'>
+                    <strong>{eventInfo.event.title}</strong>
+                    <time dateTime={eventInfo.event.start.toISOString()}>
+                      Võistluse algus: {new Date(eventInfo.event.start).toLocaleDateString()}
+                    </time>
+                    <p>
+                      Kohtunik: {eventInfo.event.extendedProps.referee}
+                    </p>
+                    <p>
+                      Võistlusklassid: {eventInfo.event.extendedProps.competitionClasses}
+                    </p>
+                    <p>
+                      Võistlustüüp: {eventInfo.event.extendedProps.status === 'BOOKED' ? 
+                      eventInfo.event.extendedProps.competitionType : eventInfo.event.extendedProps.clubCompetitionType}
+                    </p>
+                    <p>
+                      Asukoht: {eventInfo.event.extendedProps.location}
+                    </p>
+                    <p>
+                      {eventInfo.event.extendedProps.description}
+                    </p>
+                  </div>
+                </a>
               )}
             />
           </div>
