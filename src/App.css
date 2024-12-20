@@ -85,6 +85,15 @@
   padding: 10px;
   border-radius: 10px 10px 0 0;
   font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.down-arrow {
+  font-size: 12px;
+  transition: transform 0.3s ease; /* Smooth rotation transition */
 }
 
 .month-grid {
@@ -418,6 +427,12 @@ body.ReactModal__Body--open {
   justify-content: center;
 }
 /* Heading Style */
+.heading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .heading {
   font-size: 1.3rem;
   font-weight: bold;
