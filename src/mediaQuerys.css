@@ -8,6 +8,13 @@
         grid-template-columns: repeat(2, 1fr); 
     }
   }
+
+  @media (min-width: 1001px) {
+    .down-arrow {
+      display: none;
+    }
+  }
+
 @media (max-width: 1000px) {
     .calendar-container {
         grid-template-columns: repeat(1, auto); 
