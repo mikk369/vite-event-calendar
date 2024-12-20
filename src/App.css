@@ -222,7 +222,7 @@
 .event-info {
   display: flex;
   flex-direction: column;
-  text-wrap: wrap;
+  white-space: normal;
 }
 
 .event-info-link {
@@ -261,8 +261,7 @@
 
 /* Modal header*/
 .modal-header {
-  display: flex;
-  justify-content: right;
+  text-align: right;
   padding: 0.5rem;
 }
 
@@ -275,10 +274,8 @@ body.ReactModal__Body--open {
 .modal-close-button {
   background-color: #3a4d7a;
   color: #fff;
-  font-size: 18px;
-  font-weight: bold;
   cursor: pointer;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border: none;
   border-radius: 9px;
   transition: background-color 0.3s, transform 0.2s; 
@@ -316,7 +313,6 @@ body.ReactModal__Body--open {
   font-family: 'rubik', sans-serif;
   line-height: 1;
   color: #555;
-  overflow: hidden;
   z-index: 1001;
 }
 
@@ -324,16 +320,15 @@ body.ReactModal__Body--open {
   display: flex;
   flex-direction: column;
   max-height: 100%;
-  overflow-y: auto;
+  min-width: 600px;
+  overflow-y: hidden;
   padding-bottom: 2rem;
-  height: 90vh; 
+  height: 90vh;
 }
-/* .fc-scrollgrid  .fc-scrollgrid-liquid {
- height: 85vh;
-} */
 
 /* FULLCALENDAR STYLES  */
 /* Style the FullCalendar day grid */
+
 .fc-daygrid-day {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -424,7 +419,7 @@ body.ReactModal__Body--open {
 }
 /* Heading Style */
 .heading {
-  font-size: 2.4rem;
+  font-size: 1.3rem;
   font-weight: bold;
   text-align: center;
   color: #2c3e50;
