@@ -123,7 +123,13 @@ const BookingCalendar = () => {
   // Helper function to map events
   const mapEvents = (events, selectedMonth) => {
     return events
-      .filter((event) => new Date(event.start).getMonth() === selectedMonth)
+      .filter((event) => {
+        const eventDate = new Date(event.start);
+        return (
+          eventDate.getFullYear() === selectedYear &&
+          eventDate.getMonth() == selectedMonth
+        );
+      })
       .map((event) => ({
         ...event,
         end: adjustEventEnd(event.end),
