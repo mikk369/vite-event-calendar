@@ -90,7 +90,9 @@ const RegisterBookings = () => {
 
   return (
     <div className='container'>
-      <h3 className='heading'>Registreerimine</h3>
+      <div className="heading-wrapper">
+        <h3 className='heading'>Registreerimine</h3>
+      </div>
       <div className='calendar-wrapper'>
         <ReactCalendar
           minDate={new Date()}

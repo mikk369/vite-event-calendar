@@ -13,6 +13,21 @@
         grid-template-columns: repeat(1, auto); 
     }
     
+    .month-grid {
+        display: none;
+      }
+
+      .month-box.open .down-arrow {
+        transform: rotate(180deg);
+      }
+    
+      /* When the month box is open, show the month grid */
+      .month-box.open .month-grid {
+        display: grid; /* Make sure the month grid is displayed */
+      }
+      .calendar-container{
+        gap: 0.5rem;
+      }
   }
 @media (max-width: 780px) {
     .modal-content {

@@ -15,6 +15,7 @@ const BookingCalendar = () => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [events, setEvents] = useState([]);
+  const [openMonthIndex, setOpenMonthIndex] = useState(null);
 
   useEffect(() => {
     const fetchEventBookings = async () => {
@@ -179,6 +180,15 @@ const BookingCalendar = () => {
       }
       return [];
   }
+  
+//Open month-grid on click when in mobile view
+  const handleMonthClick = (i) => {
+    if( openMonthIndex === i) {
+      setOpenMonthIndex(null);
+    } else {
+      setOpenMonthIndex(i);
+    }
+  }
 
   if (loading) {
     return (
@@ -196,17 +206,19 @@ const BookingCalendar = () => {
     <div id="agility-calendar-wrapper">
         {/* Year Navigation */}
         <div className="year-selector">
-          <button onClick={() => changeYear(-1)}><i class="fa-solid fa-arrow-left"></i></button>
+          <button onClick={() => changeYear(-1)}><i className="fa-solid fa-arrow-left"></i></button>
           <span className="year-title">{selectedYear}</span>
-          <button onClick={() => changeYear(1)}><i class="fa-solid fa-arrow-right"></i></button>
+          <button onClick={() => changeYear(1)}><i className="fa-solid fa-arrow-right"></i></button>
         </div>
       <div className="calendar-container">
         {/* Month Boxes */}
         {months.map((month, index) => {
           return (
-            <div key={index} className="month-box" onClick={() => openModal(index)}>
-              <h3 className="month-title">{month} {selectedYear}</h3>
-              <div className="month-grid">
+            <div key={index}  className={`month-box ${openMonthIndex === index ? 'open' : ''}`}>
+              <h3 className="month-title" onClick={() => handleMonthClick(index)}>{month} {selectedYear}
+                <span className='down-arrow'><i className="fa-solid fa-angle-down"></i></span>
+              </h3>
+              <div className="month-grid" onClick={() => openModal(index)}>
                 <span className="day-header">E</span>
                 <span className="day-header">T</span>
                 <span className="day-header">K</span>
