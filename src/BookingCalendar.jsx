@@ -4,6 +4,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import axios from 'axios';
 import './App.css';
+import './mediaQuerys.css'
 // Set the app element for accessibility
 Modal.setAppElement('#root');
 
@@ -258,11 +259,11 @@ const BookingCalendar = () => {
         className="modal-content"
         overlayClassName="modal-overlay"
       >
-        <div className="modal-header">
-          <button className="modal-close-button" onClick={closeModal}>Close</button>
-        </div>
         {selectedMonth !== null && (
           <div className="fullcalendar-container">
+            <div className="modal-header">
+              <button className="modal-close-button" onClick={closeModal}><i class="fa-solid fa-x"></i></button>
+            </div>
             <FullCalendar
               locale="et"
               firstDay={1}
