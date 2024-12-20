@@ -1,0 +1,57 @@
+@media (max-width: 1900px) {
+    .calendar-container {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+  }
+@media (max-width: 1400px) {
+    .calendar-container {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+  }
+@media (max-width: 1000px) {
+    .calendar-container {
+        grid-template-columns: repeat(1, auto); 
+    }
+    
+  }
+@media (max-width: 780px) {
+    .modal-content {
+        width: 100%;
+        padding: 0.5rem;
+        overflow-y: hidden;
+    }
+}
+
+@media(max-width: 767px) {
+    .fc-toolbar.fc-header-toolbar {
+        display: flex !important;
+    }
+}
+
+@media (max-width: 600px) {
+    #agility-calendar-wrapper {
+        padding: 0;
+    }
+    .month-title {
+        font-size: 14px;
+    }
+
+    .month-grid {
+        font-size: 12px;
+    }
+
+    .pending-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .booked-dot {
+        width: 6px;
+        height: 6px;
+    }
+    .fc-toolbar {
+        font-size: 0.6rem;
+        padding: 0.2rem 0; 
+    }
+  }
+  
