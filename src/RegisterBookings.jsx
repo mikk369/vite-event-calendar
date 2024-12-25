@@ -19,7 +19,6 @@ const RegisterBookings = () => {
     competitionClasses: '',
     competitionType: '',
   });
-
   useEffect(() => {
     if (startDate && endDate && startDate > endDate) {
       setError(true);
@@ -50,13 +49,21 @@ const RegisterBookings = () => {
         return;
       }
 
+      //enduse date is formatted in local time
+      const formatDateToLocal = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
         // Add the formatted startDate and endDate to the formData
         const updatedFormData = {
           ...formData,
-          startDate: startDate.toISOString().split('T')[0],
-          endDate: endDate.toISOString().split('T')[0],
+          startDate: formatDateToLocal(startDate),
+          endDate: formatDateToLocal(endDate),
         };
-
+        
       // Send the data to WordPress REST API
       await axios.post(
         'https://agilityliit.ee/wp-json/bookings/v1/lisa_broneering', updatedFormData);
