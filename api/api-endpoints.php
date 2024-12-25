@@ -149,6 +149,31 @@ function post_booking($data) {
             'status' => $status, // Set status either PENDING or CLUBEVENT
         )
     );
+
+    //Send email to client
+    $subject = "Võistluse registreerimise teavitus.";
+    $message = "$name, \n\nTäname,et registreerisid võistluse.\n\nTeie võistluse andmed:\n
+    Alguskuupäev: $start_date
+    Lõppkuupäev: $end_date
+    Asukoht: $location
+    Kohtunik: $referee
+    Muu info: $info
+    Võistlusklassid: $competitionClasses
+    Võistlustüüp: $competitionType
+    
+    Teie registreeritud võistlus on ootel, teile saadetakse teavitus kui võistlus on kalendreisse kinnitatud.
+    
+    Parimate soovidega, Eesti agilityliit.";
+    $headers = ['Content-Type: text/plain; charset=UTF-8'];
+
+     // Check if email was successfully sent
+     if (!wp_mail($email, $subject, $message, $headers)) {
+        return new WP_REST_Response(
+            array('error' => 'Broneering salvestati, kuid emaili teavitus ebaõnnestus.'),
+            500
+        );
+    }
+
     return new WP_REST_Response( array('message' => 'Booking added successfully' ), 200 );
 }
 
