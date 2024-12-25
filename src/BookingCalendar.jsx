@@ -280,7 +280,7 @@ const BookingCalendar = () => {
         {selectedMonth !== null && (
           <div className="fullcalendar-container">
             <div className="modal-header">
-              <button className="modal-close-button" onClick={closeModal}><i class="fa-solid fa-x"></i></button>
+              <button className="modal-close-button" onClick={closeModal}><i className="fa-solid fa-x"></i></button>
             </div>
             <FullCalendar
               locale="et"
