@@ -91,6 +91,25 @@ function get_all_bookings() {
 function post_booking($data) {
     global $wpdb;
 
+     // Validate required fields
+     $required_fields = ['startDate', 'endDate', 'name', 'email', 'phone', 'location', 'competitionType'];
+     foreach ($required_fields as $field) {
+         if (empty($data[$field])) {
+             return new WP_REST_Response(
+                 array('error' => "$field is required"),
+                 400
+             );
+         }
+     }
+
+     //date validation startDate cant be greater than endDate
+     if (strtotime($data['startDate']) > strtotime($data['endDate'])) {
+        return new WP_REST_Response(
+            array('error' => 'Start date cannot be greater than end date'),
+            400
+        );
+    }
+    
     // Get the data from the request
     $start_date = sanitize_text_field( $data['startDate'] );
     $end_date = sanitize_text_field( $data['endDate'] );
@@ -102,6 +121,14 @@ function post_booking($data) {
     $info = sanitize_textarea_field( $data['info'] );
     $competitionClasses = sanitize_text_field( $data['competitionClasses'] );
     $competitionType = sanitize_text_field( $data['competitionType'] );
+
+      // Validate email format
+      if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return new WP_REST_Response(
+            array('error' => 'Invalid email address'),
+            400
+        );
+    }
 
     //Default set to PENDING if not CLUBEVENT
     $status = isset($data['isClubEvent']) && $data['isClubEvent'] ? 'CLUBEVENT' : 'PENDING';
