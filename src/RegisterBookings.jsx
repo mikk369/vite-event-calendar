@@ -44,6 +44,13 @@ const RegisterBookings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+      if (!startDate || !endDate) {
+        console.error("Palun valida algus ja lõppkuupäev!");
+        alert("Algus ja lõppkuupäev on kohustuslik!");
+        return;
+      }
+
       if (!startDate || !endDate || startDate > endDate) {
         console.log('Error occurred adding data!');
         return;
@@ -130,6 +137,7 @@ const RegisterBookings = () => {
           onChange={handleChange}
           placeholder="Korraldav klubi"
           className='input'
+          required
         />
         <p className='date-text'>E-post</p>
         <input
@@ -138,6 +146,7 @@ const RegisterBookings = () => {
           onChange={handleChange}
           placeholder="E-post"
           className='input'
+          required
         />
         <p className='date-text'>Telefon</p>
         <input
@@ -146,6 +155,7 @@ const RegisterBookings = () => {
           onChange={handleChange}
           placeholder="Phone"
           className='input'
+          required
         />
         <p className='date-text'>Asukoht</p>
         <input
@@ -154,6 +164,7 @@ const RegisterBookings = () => {
           onChange={handleChange}
           placeholder="Asukoht"
           className='input'
+          required
         />
         <p className='date-text'>Kohtunik</p>
         <input
@@ -162,6 +173,7 @@ const RegisterBookings = () => {
           onChange={handleChange}
           placeholder="Kohtunik"
           className='input'
+          required
         />
         <p className='date-text'>Info</p>
         <input
@@ -170,6 +182,7 @@ const RegisterBookings = () => {
           onChange={handleChange}
           placeholder="Info"
           className='input'
+          required
         />
         <p className='date-text'>Võistlusklassid</p>
         <input
@@ -178,6 +191,7 @@ const RegisterBookings = () => {
           onChange={handleChange}
           placeholder="Võistlusklassid"
           className='input'
+          required
         />
         <p className='date-text'>Võistlustüüp</p>
         <select
@@ -185,6 +199,7 @@ const RegisterBookings = () => {
           value={formData.competitionType}
           onChange={handleChange}
           className='input'
+          required
         >
           <option value="" disabled>Valige võistlustüüp</option> {/* Default placeholder */}
           <option value="EKL eesti edukamate sportkoerte ja koerajuhtide võistlus">
