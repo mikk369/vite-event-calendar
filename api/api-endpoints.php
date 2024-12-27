@@ -152,7 +152,7 @@ function post_booking($data) {
     
     //Send email to CLIENT
     $subject = "Võistluse registreerimise teavitus.";
-    $message = "
+    $client_message = "
         <html>
             <body>
                 <p>
@@ -167,13 +167,16 @@ function post_booking($data) {
                 <ul style='list-style-type: none'>
                     <li>Alguskuupäev: $start_date</li>
                     <li>Lõppkuupäev: $end_date</li>
-                    <li>Asukoht: $location</li>
-                    <li>Kohtunik: $referee</li>";
+                    <li>Asukoht: $location</li>";
+                    // Add conditional kohtunik
+                    if (!empty($referee)) {
+                        $client_message .= "<li>Kohtunik: $referee</li>";
+                    }
                     // Add conditional Lisainfo
                     if (!empty($info)) {
-                        $message .= "<li>Lisainfo: $info</li>";
+                        $client_message .= "<li>Lisainfo: $info</li>";
                     }
-                    $message .= "
+                    $client_message .= "
                     <li>Võistlusklassid: $competitionClasses</li>
                     <li>Võistlustüüp: $competitionType</li>
                 </ul>
@@ -188,7 +191,7 @@ function post_booking($data) {
     $headers = ['Content-Type: text/html; charset=UTF-8'];
 
      // Check if email was successfully sent
-     if (!wp_mail($email, $subject, $message, $headers)) {
+     if (!wp_mail($email, $subject, $client_message, $headers)) {
         return new WP_REST_Response(
             array('error' => 'Broneering salvestati, kuid emaili teavitus ebaõnnestus.'),
             500
@@ -208,8 +211,11 @@ function post_booking($data) {
                         <li>Korraldav klubi: $name</li>
                         <li>Email: $email</li>
                         <li>Telefon: $phone</li>
-                        <li>Asukoht: $location</li>
-                        <li>Kohtunik: $referee</li>";
+                        <li>Asukoht: $location</li>";
+                        // Add conditional kohtunik
+                        if (!empty($referee)) {
+                            $admin_message .= "<li>Kohtunik: $referee</li>";
+                        }
                         // Add conditional Lisainfo
                         if (!empty($info)) {
                             $admin_message .= "<li>Lisainfo: $info</li>";
@@ -280,7 +286,6 @@ function update_booking_status($data) {
 
     // Get the booking ID and the new status from the request
     $params = $data->get_params();  // Use get_params() to get request parameters
-
     $booking_id = $params['id'];
     $new_status = 'BOOKED';
 
@@ -308,6 +313,52 @@ function update_booking_status($data) {
 
     if ($updated === false) {
         return new WP_Error('update_failed', 'Failed to update booking status', array('status' => 500));
+    }
+
+    // Get client email from the booking
+    $client_email = $booking->email;
+    $client_name = $booking->name;
+    $start_date = $booking->startDate;
+    $end_date = $booking->endDate;
+    $location = $booking->location;
+    $referee = $booking->referee;
+    $info = $booking->info;
+    $competitionClasses = $booking->competitionClasses;
+    $competitionType = $booking->competitionType;
+
+    // Send email notification to the client
+    $subject = "Teie võistlus on kalendrisse lisatud";
+    $client_status_message = "
+        <html>
+            <body>
+                <p>$client_name, teie võistlus on kalendrisse lisatud</p>
+                <p>Teie võistluse andmed:</p>
+                <ul style='list-style-type: none; padding: 0;'>
+                    <li>Alguskuupäev: $start_date</li>
+                    <li>Lõppkuupäev: $end_date</li>
+                    <li>Asukoht: $location</li>";
+                    // Add conditional kohtunik
+                    if (!empty($referee)) {
+                        $client_status_message .= "<li>Kohtunik: $referee</li>";
+                    }
+                    // Add conditional Lisainfo
+                    if (!empty($info)) {
+                        $client_status_message .= "<li>Lisainfo: $info</li>";
+                    }
+                    $client_status_message .= "
+                    <li>Võistlusklassid: $competitionClasses</li>
+                    <li>Competition Type: $competitionType</li>
+                </ul>
+                <p>Tänud registreerimast!</p>
+                <p>Parimate soovidega, Eesti Agilityliit.</p>
+            </body>
+        </html>";
+
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+
+    // Send the email
+    if (!wp_mail($client_email, $subject, $client_status_message, $headers)) {
+        return new WP_Error('email_failed', 'Failed to send client notification email', array('status' => 500));
     }
 
     return new WP_REST_Response(array('status' => 'success', 'message' => 'Booking status updated'), 200);
