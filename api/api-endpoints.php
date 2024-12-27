@@ -149,22 +149,43 @@ function post_booking($data) {
             'status' => $status, // Set status either PENDING or CLUBEVENT
         )
     );
-
-    //Send email to client
+    
+    //Send email to CLIENT
     $subject = "Võistluse registreerimise teavitus.";
-    $message = "$name, \n\nTäname,et registreerisid võistluse.\n\nTeie võistluse andmed:\n
-    Alguskuupäev: $start_date
-    Lõppkuupäev: $end_date
-    Asukoht: $location
-    Kohtunik: $referee
-    Muu info: $info
-    Võistlusklassid: $competitionClasses
-    Võistlustüüp: $competitionType
-    
-    Teie registreeritud võistlus on ootel, teile saadetakse teavitus kui võistlus on kalendreisse kinnitatud.
-    
-    Parimate soovidega, Eesti agilityliit.";
-    $headers = ['Content-Type: text/plain; charset=UTF-8'];
+    $message = "
+        <html>
+            <body>
+                <p>
+                    $name,
+                </p>
+                <p>
+                    Täname, et registreerisid võistluse.
+                </p>
+                <p>
+                    Teie võistluse andmed:
+                </p>
+                <ul style='list-style-type: none'>
+                    <li>Alguskuupäev: $start_date</li>
+                    <li>Lõppkuupäev: $end_date</li>
+                    <li>Asukoht: $location</li>
+                    <li>Kohtunik: $referee</li>";
+                    // Add conditional Lisainfo
+                    if (!empty($info)) {
+                        $message .= "<li>Lisainfo: $info</li>";
+                    }
+                    $message .= "
+                    <li>Võistlusklassid: $competitionClasses</li>
+                    <li>Võistlustüüp: $competitionType</li>
+                </ul>
+                <p>
+                    Teie registreeritud võistlus on ootel, teile saadetakse teavitus kui võistlus on kalendrisse kinnitatud.
+                </p>
+                <p>
+                    Parimate soovidega, Eesti Agilityliit.
+                </p>
+            </body>
+        </html>";
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
 
      // Check if email was successfully sent
      if (!wp_mail($email, $subject, $message, $headers)) {
@@ -173,6 +194,34 @@ function post_booking($data) {
             500
         );
     }
+
+    //send email to ADMIN
+    $admin_email = 'mikk.ereline@gmail.com';
+    $admin_subject = "Uue võistluse registreerimine vajab kinnitust.";
+    $admin_message = "
+        <html>
+            <body>
+                <strong>Võistluse andmed:</strong>
+                    <ul style='list-style-type: none; padding: 0;'>
+                        <li>Alguskuupäev: $start_date</li>
+                        <li>Lõppkuupäev: $end_date</li>
+                        <li>Korraldav klubi: $name</li>
+                        <li>Email: $email</li>
+                        <li>Telefon: $phone</li>
+                        <li>Asukoht: $location</li>
+                        <li>Kohtunik: $referee</li>";
+                        // Add conditional Lisainfo
+                        if (!empty($info)) {
+                            $admin_message .= "<li>Lisainfo: $info</li>";
+                        }
+                        $admin_message .= "
+                        <li>Võistlusklassid: $competitionClasses</li>
+                        <li>Võistlustüüp: $competitionType</li>
+                    </ul>
+            </body>
+        </html>";
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+    wp_mail($admin_email, $admin_subject, $admin_message, $headers);
 
     return new WP_REST_Response( array('message' => 'Booking added successfully' ), 200 );
 }
@@ -261,7 +310,7 @@ function update_booking_status($data) {
         return new WP_Error('update_failed', 'Failed to update booking status', array('status' => 500));
     }
 
-    return new WP_REST_Response(array('status' => ' success', 'message' => 'Booking status updated'), 200);
+    return new WP_REST_Response(array('status' => 'success', 'message' => 'Booking status updated'), 200);
 }
 
 // Callback function to delete a booking
