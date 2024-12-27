@@ -196,7 +196,7 @@ function post_booking($data) {
     }
 
     //send email to ADMIN
-    $admin_email = 'mikk.ereline@gmail.com';
+    $admin_email = 'info@agilityliit.ee';
     $admin_subject = "Uue võistluse registreerimine vajab kinnitust.";
     $admin_message = "
         <html>
