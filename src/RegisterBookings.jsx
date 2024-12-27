@@ -173,16 +173,14 @@ const RegisterBookings = () => {
           onChange={handleChange}
           placeholder="Kohtunik"
           className='input'
-          required
         />
-        <p className='date-text'>Info</p>
+        <p className='date-text'>Lisainfo</p>
         <input
           id="info"
           value={formData.info}
           onChange={handleChange}
-          placeholder="Info"
+          placeholder="Lisainfo"
           className='input'
-          required
         />
         <p className='date-text'>Võistlusklassid</p>
         <input
