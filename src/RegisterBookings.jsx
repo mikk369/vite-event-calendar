@@ -175,7 +175,7 @@ const RegisterBookings = () => {
           placeholder="Kohtunik"
           className='input'
         />
-        <p className='date-text'>Lisainfo</p>
+        <p className='register-lable'>Lisainfo</p>
         <input
           id="info"
           value={formData.info}
@@ -183,7 +183,7 @@ const RegisterBookings = () => {
           placeholder="Lisainfo"
           className='input'
         />
-        <p className='date-text'>Võistlusklassid</p>
+        <p className='register-lable'>Võistlusklassid</p>
         <input
           id="competitionClasses"
           value={formData.competitionClasses}
@@ -192,7 +192,7 @@ const RegisterBookings = () => {
           className='input'
           required
         />
-        <p className='date-text'>Võistlustüüp</p>
+        <p className='register-lable'>Võistlustüüp</p>
         <select
           id="competitionType"
           value={formData.competitionType}
