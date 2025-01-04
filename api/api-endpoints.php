@@ -11,7 +11,7 @@ defined('ABSPATH') or die('No script kiddies please!');
 
 // Add CORS headers
 function add_cors_headers() {
-    header("Access-Control-Allow-Origin: https://fbtest.webcodes.ee");
+    header("Access-Control-Allow-Origin: https://agilityliit.ee");
     header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
     header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 }
@@ -151,7 +151,7 @@ function post_booking($data) {
     );
     
     //Send email to CLIENT
-    $subject = "Võistluse registreerimise teavitus.";
+    $subject = "Teie võistlus on edukalt registreeritud!";
     $client_message = "
         <html>
             <body style='background-color: #f0f0f0; margin: 0; padding: 0;'>
@@ -168,7 +168,7 @@ function post_booking($data) {
                                     <td style='padding: 20px;'>
                                         <h3>$name,</h3>
                                         <h3>Täname, et registreerisite võistluse.</h3
-                                        <h3>Teie võistluse andmed:</h3>
+                                        <h3>Teie registreeritud võistluse info:</h3>
                                         <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
                                             <tr><td><strong>Alguskuupäev:</strong> $start_date</td></tr>
                                             <tr><td><strong>Lõppkuupäev:</strong> $end_date</td></tr>
@@ -230,7 +230,7 @@ function post_booking($data) {
 
     //send email to ADMIN
     $admin_email = 'info@agilityliit.ee';
-    $admin_subject = "Uue võistluse registreerimine vajab kinnitamist.";
+    $admin_subject = "Uus võistlus registreeritud – kinnitamise ootel.";
     $admin_message = "
         <html>
             <body style='background-color: #f0f0f0; margin: 0; padding: 0;'>
@@ -245,7 +245,7 @@ function post_booking($data) {
                                 </tr>
                                 <tr>
                                     <td style='padding: 20px;'>
-                                        <h3>Võistluse andmed:</h3>
+                                        <h3>Registreeritud võistluse andmed:</h3>
                                         <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
                                             <tr>
                                                 <td>
@@ -417,70 +417,48 @@ function update_booking_status($data) {
     $competitionType = $booking->competitionType;
 
     // Send email notification to the client
-    $subject = "Teie võistlus on kalendrisse lisatud";
+    $subject = "Võistlus kinnitatud ja lisatud kalendrisse!";
     $client_status_message = "
     <html>
-        <body>
-            <table width='100%' cellpadding='0' cellspacing='0' style='font-family: Arial, sans-serif;'>
+        <body style='background-color: #f0f0f0; margin: 0; padding: 0;'>
+            <table width='100%' cellpadding='0' cellspacing='0' style='font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px 0;'>
                 <tr>
                     <td align='center'>
-                        <img src='https://agilityliit.ee/wp-content/uploads/2024/06/agilityliit_logo_halliga.png' alt='Agilityliit Logo' style='max-width: 200px; height: auto;'>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h3>$client_name, teie võistlus on kalendrisse lisatud</h3>
-                        <h3>Teie võistluse andmed:</h3>
-                        <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
+                        <table width='600' cellpadding='0' cellspacing='0' style='background-color: #ffffff; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);'>
                             <tr>
-                                <td>
-                                    <strong>Alguskuupäev:</strong> $start_date
+                                <td align='center' style='padding: 20px 0;'>
+                                    <img src='https://agilityliit.ee/wp-content/uploads/2024/06/agilityliit_logo_halliga.png' alt='Agilityliit Logo' style='max-width: 200px; height: auto;'>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    <strong>Lõppkuupäev:</strong> $end_date
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong>Asukoht:</strong> $location
-                                </td>
-                            </tr>";
+                                <td style='padding: 20px;'>
+                                    <h3>$client_name, teie võistlus on kalendrisse lisatud.</h3>
+                                    <h3>Võistluse andmed on järgmised:</h3>
+                                    <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
+                                        <tr><td><strong>Alguskuupäev:</strong> $start_date</td></tr>
+                                        <tr><td><strong>Lõppkuupäev:</strong> $end_date</td></tr>
+                                        <tr><td><strong>Asukoht:</strong> $location</td></tr>";
 
-                            // Add conditional kohtunik
-                            if (!empty($referee)) {
-                                $client_status_message .= "
-                                <tr>
-                                    <td>
-                                        <strong>Kohtunik:</strong> $referee
-                                    </td>
-                                </tr>";
-                            }
+                                        // Add conditional kohtunik
+                                        if (!empty($referee)) {
+                                            $client_status_message .= "
+                                            <tr><td><strong>Kohtunik:</strong> $referee</td></tr>";
+                                        }
 
-                            // Add conditional Lisainfo
-                            if (!empty($info)) {
-                                $client_status_message .= "
-                                <tr>
-                                    <td>
-                                        <strong>Lisainfo:</strong> $info
-                                    </td>
-                                </tr>";
-                            }
+                                        // Add conditional Lisainfo
+                                        if (!empty($info)) {
+                                            $client_status_message .= "
+                                            <tr><td><strong>Lisainfo:</strong> $info</td></tr>";
+                                        }
 
-                            $client_status_message .= "
-                            <tr>
-                                <td>
-                                    <strong>Võistlusklassid:</strong> $competitionClasses
+                                        $client_status_message .= "
+                                        <tr><td><strong>Võistlusklassid:</strong> $competitionClasses</td></tr>
+                                        <tr><td><strong>Võistlustüüp:</strong> $competitionType</td></tr>
+                                    </table>
+                                    <p>Tänud registreerimast!</p>
+                                    <p>Parimate soovidega, Eesti Agilityliit.</p>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <strong>Võistlustüüp:</strong> $competitionType
-                                </td>
-                            </tr>
-                            <p>Tänud registreerimast!</p>
-                            <p>Parimate soovidega, Eesti Agilityliit.</p>
                         </table>
                     </td>
                 </tr>
