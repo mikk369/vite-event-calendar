@@ -79,7 +79,7 @@
 
 /* Month title */
 .month-title {
-  background-color: #3a4d7a;
+  background-color: #0071ff;
   color: #fff;
   text-align: center;
   padding: 10px;
@@ -282,18 +282,18 @@ body.ReactModal__Body--open {
 
 /* Style for the close button */
 .modal-close-button {
-  background-color: #3a4d7a;
+  background-color: #0071ff;
   color: #fff;
   cursor: pointer;
   padding: 4px 8px;
   border: none;
   border-radius: 9px;
-  transition: background-color 0.3s, transform 0.2s; 
 }
 
-/* Hover effect for close button */
 .modal-close-button:hover {
-  background-color: #425685; 
+	background-color: #006aec;
+  cursor: pointer; 
+	color: #fff;
 }
 
 /* Modal overlay styles */
@@ -338,6 +338,15 @@ body.ReactModal__Body--open {
 
 /* FULLCALENDAR STYLES  */
 /* Style the FullCalendar day grid */
+/* menu bar button when calendar is open  */
+.fc .fc-button-primary {
+  background-color: #0071ff;
+  border: none;
+}
+
+.fc .fc-button-primary:hover {
+  background-color: #006aec;
+}
 
 .fc-daygrid-day {
   background-color: #f9f9f9;
@@ -356,14 +365,13 @@ body.ReactModal__Body--open {
   z-index: 2;
 }
 
-/* Hover effect for days */
-.fc-day:hover {
-  background-color: #e0e0e0;
+.fc-scrollgrid-sync-inner.a:hover {
+  color: #fff;
 }
 
 /* Style for the calendar's header (the day names like Sun, Mon, etc.) */
 .fc-col-header {
-  background-color: #3a4d7a;
+  background-color: #0071ff;
   color: #fff;
   text-align: center;
   padding: 10px 0;
@@ -377,7 +385,7 @@ body.ReactModal__Body--open {
 
 /* Style the individual event boxes */
 .fc-event {
-  background-color: #5c99ff;
+  background-color: #0071ff;
   color: white; 
   border-radius: 5px;
   font-size: 12px;
@@ -386,7 +394,6 @@ body.ReactModal__Body--open {
 }
 /* Add a hover effect on events */
 .fc-event:hover {
-  background-color: #4a89e1; 
   cursor: pointer; 
 }
 
@@ -426,6 +433,7 @@ body.ReactModal__Body--open {
 .calendar-wrapper {
   display: flex;
   justify-content: center;
+  margin-bottom: 3rem;
 }
 /* Heading Style */
 .heading-wrapper {
@@ -500,8 +508,15 @@ body.ReactModal__Body--open {
   margin-bottom: 1em;
 }
 .react-calendar__navigation button {
-  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  padding: 0; 
+  border-radius: 50%;
   background: none;
+  color: #0071ff;
 }
 .react-calendar__navigation button:disabled {
   visibility: hidden;
@@ -510,13 +525,24 @@ body.ReactModal__Body--open {
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
   background-color: #e6e6e6;
+  padding: 4px;
 }
 .react-calendar__month-view__weekdays {
   font-weight: bold;
   padding: 10px 0;
   border-radius: 5px;
   color: #2c3e50;
+  cursor: pointer;
 }
+/* //remove questionmark (?)from hovering day  */
+.react-calendar abbr[aria-label] {
+  cursor: pointer; 
+}
+
+.react-calendar abbr[aria-label]::after {
+  content: none;
+}
+
 /* Each day should be round when hovered */
 .react-calendar__month-view__days__day {
   padding: 5px;
@@ -635,6 +661,13 @@ body.ReactModal__Body--open {
 .date-text {
   font-size: 16px;
   font-weight: 500;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.register-lable {
+  font-size: 16px;
+  font-weight: 500;
   margin-bottom: 8px;
   color: #333;
 }
@@ -665,8 +698,8 @@ body.ReactModal__Body--open {
 }
 
 /* Button Style */
-.button {
-  background-color: #3a4d7a;
+.register-submit-button {
+  background-color: #0071ff;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -677,8 +710,8 @@ body.ReactModal__Body--open {
   font-weight: bold;
 }
 
-.button:hover {
-  background-color: #3f527e;
+.register-submit-button:hover {
+  background-color: #006aec;
 }
 
 
