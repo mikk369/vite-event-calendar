@@ -110,6 +110,7 @@ const RegisterBookings = () => {
       <div className='calendar-wrapper'>
         <ReactCalendar
           minDate={new Date()}
+          locale='et'
           view="month"
           onClickDay={handleDateClick}
           value={[startDate, endDate]} // Highlight selected date range
@@ -125,12 +126,12 @@ const RegisterBookings = () => {
       {!error && (
         <form onSubmit={handleSubmit} className='date-info-container'>
         <p className='date-text'>
-          Selected Start Date: {startDate && startDate.toDateString()}
+          Valitud alguskuupäev: {startDate && startDate.toLocaleDateString('et-EE')}
         </p>
         <p className='date-text'>
-          Selected End Date: {endDate && endDate.toDateString()}
+          Valitud lõppkuupäev: {endDate && endDate.toLocaleDateString('et-EE')}
         </p>
-        <p className='date-text'>Korraldav klubi</p>
+        <p className='register-lable'>Korraldav klubi</p>
         <input
           id="name"
           value={formData.name}
@@ -139,7 +140,7 @@ const RegisterBookings = () => {
           className='input'
           required
         />
-        <p className='date-text'>E-post</p>
+        <p className='register-lable'>E-post</p>
         <input
           id="email"
           value={formData.email}
@@ -148,7 +149,7 @@ const RegisterBookings = () => {
           className='input'
           required
         />
-        <p className='date-text'>Telefon</p>
+        <p className='register-lable'>Telefon</p>
         <input
           id="phone"
           value={formData.phone}
@@ -157,7 +158,7 @@ const RegisterBookings = () => {
           className='input'
           required
         />
-        <p className='date-text'>Asukoht</p>
+        <p className='register-lable'>Asukoht</p>
         <input
           id="location"
           value={formData.location}
@@ -166,7 +167,7 @@ const RegisterBookings = () => {
           className='input'
           required
         />
-        <p className='date-text'>Kohtunik</p>
+        <p className='register-lable'>Kohtunik</p>
         <input
           id="referee"
           value={formData.referee}
@@ -209,7 +210,7 @@ const RegisterBookings = () => {
           <option value="klubimeistrivõistlus">Klubimeistrivõistlus</option>
           <option value="muu rahvuslik võistlus">Muu rahvuslik võistlus</option>
         </select>
-        <button type="submit" className='button'>
+        <button type="submit" className='register-submit-button'>
           Registreeri
         </button>
       </form>
