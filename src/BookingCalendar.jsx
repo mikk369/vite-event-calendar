@@ -174,7 +174,21 @@ const BookingCalendar = () => {
         </>
       );
   };
-  
+
+  // dateSet function that is triggered whenever the visible date range of the calendar changes.
+  const handleDateSet = (dateInfo) => {
+     // Calculate the center of the visible range
+     const startDate = new Date(dateInfo.start);
+     const endDate = new Date(dateInfo.end);
+     const centerDate = new Date((startDate.getTime() + endDate.getTime()) / 2);
+   
+     const newYear = centerDate.getFullYear();
+     const newMonth = centerDate.getMonth();
+   
+     setSelectedYear(newYear);
+     setSelectedMonth(newMonth);
+  }
+
   //Give classnames inside fullCalendar events
   const fullCalendarEventNames = (event) => {
       if (event.event.extendedProps.status === 'BOOKED') {
@@ -186,8 +200,8 @@ const BookingCalendar = () => {
       }
       return [];
   }
-  
-//Open month-grid on click when in mobile view
+
+  //Open month-grid on click when in mobile view
   const handleMonthClick = (i) => {
     if( openMonthIndex === i) {
       setOpenMonthIndex(null);
@@ -196,6 +210,7 @@ const BookingCalendar = () => {
     }
   }
 
+  //loading div
   if (loading) {
     return (
       <div className="loading-container">
@@ -292,6 +307,7 @@ const BookingCalendar = () => {
               events={mapEvents(events, selectedMonth)}
               dayHeaderContent={getDayHeader}
               eventClassNames={fullCalendarEventNames}
+              datesSet={handleDateSet}
               eventContent={(eventInfo) => (
                 <a href='http://agilitykoer.ee/?controller=competitions' className="event-info-link" target="_blank">
                   <div className='event-info'>
