@@ -92,16 +92,42 @@ const BookingCalendar = ({events, loading, error}) => {
   const mapEvents = (events, selectedMonth) => {
     return events
       .filter((event) => {
-        const eventDate = new Date(event.start);
+        const eventStart = new Date(event.start);
+        const eventEnd = adjustEventEnd(event.end);
+        
+        // Check if the event overlaps with the current month
         return (
-          eventDate.getFullYear() === selectedYear &&
-          eventDate.getMonth() == selectedMonth
+          (eventStart.getFullYear() === selectedYear && eventStart.getMonth() <= selectedMonth) &&
+          (eventEnd.getFullYear() === selectedYear && eventEnd.getMonth() >= selectedMonth)
         );
       })
       .map((event) => ({
         ...event,
         end: adjustEventEnd(event.end),
       }));
+  };
+
+  //calculate correct start and endtime
+  const filterEventsWithDateRange = (events, selectedYear, monthIndex, day) => {
+    const mappedEvents = mapEvents(events, monthIndex);
+  
+    return mappedEvents.filter((event) => {
+      const eventStart = new Date(event.start);
+      const eventEnd = new Date(event.end);
+      const currentDate = new Date(selectedYear, monthIndex, day);
+  
+      // Normalize dates by setting the time to midnight (00:00:00)
+      eventStart.setHours(0, 0, 0, 0);
+      eventEnd.setHours(23, 59, 59, 999);
+      currentDate.setHours(0, 0, 0, 0);
+  
+      // Ensure the current date is valid and falls between the event's start and end dates
+      return (
+        day &&
+        currentDate >= eventStart &&
+        currentDate <= eventEnd
+      );
+    });
   };
 
   // determine the class name for a day-box 
@@ -221,15 +247,7 @@ const BookingCalendar = ({events, loading, error}) => {
 
                 {/* Render the grid of days for the current month */}
                 {generateMonthGrid(index, selectedYear).map((day, i) => {
-                  const mappedEvents = mapEvents(events, index);
-                  const dayEvents = mappedEvents.filter((event) => {
-                    const eventStart = new Date(event.start);
-                    const eventEnd = new Date(event.end);
-                    return (
-                      (eventStart.getDate() <= day && eventEnd.getDate() >= day) && 
-                      eventStart.getMonth() === index && eventEnd.getMonth() === index
-                    );
-                  });
+                  const dayEvents = filterEventsWithDateRange(events, selectedYear, index, day);
 
                   return (
                     <div key={i} className={`day-box ${getDayBoxClass(day, dayEvents)}`}
