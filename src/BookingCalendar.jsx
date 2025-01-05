@@ -129,14 +129,17 @@ const BookingCalendar = ({events, loading, error}) => {
     const hasClubEvent = dayEvents.some((event) => event.status === 'CLUBEVENT');
     const hasPending = dayEvents.some((event) => event.status === 'PENDING');
     const hasBooked = dayEvents.some((event) => event.status === 'BOOKED');
+    const hasBookedCount = dayEvents.filter((event) => event.status === 'BOOKED').length;
   
     // Render dots based on conditions
       return (
         <>
         <div className="dot-container">
+          {/* Show blue dot when there is more than 1 BOOKED event */}
+          {hasBookedCount > 1 && <div className="booked-dot"></div>}
           {/* Show the yellow dot if there's a PENDING event and either BOOKED or CLUBEVENT exists */}
           {(hasPending && (hasBooked || hasClubEvent)) && <div className="pending-dot"></div>} {/* Yellow dot */}
-
+        
           {/* Show the blue dot ONLY if there’s a BOOKED event AND a CLUBEVENT */}
           {hasClubEvent && hasBooked && <div className="booked-dot"></div>} {/* Blue dot */}
         </div>
