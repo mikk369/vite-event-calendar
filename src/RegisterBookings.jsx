@@ -3,7 +3,7 @@ import ReactCalendar from 'react-calendar';
 import axios from 'axios';
 import './App.css'
 
-const RegisterBookings = () => {
+const RegisterBookings = ({updateEvents}) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(false);
@@ -75,18 +75,30 @@ const RegisterBookings = () => {
       await axios.post(
         'https://agilityliit.ee/wp-json/bookings/v1/lisa_broneering', updatedFormData);
 
-      setStartDate(null);
-      setEndDate(null);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        location: '',
-        referee: '',
-        info: '',
-        competitionClasses: '',
-        competitionType: '',
-      });
+        updateEvents({
+          title: updatedFormData.name,
+          start: updatedFormData.startDate,
+          end: updatedFormData.endDate,
+          referee: updatedFormData.referee,
+          competitionClasses: updatedFormData.competitionClasses,
+          competitionType: updatedFormData.competitionType,
+          description: updatedFormData.info,
+          location: updatedFormData.location,
+          status: 'PENDING'
+        });
+
+        setStartDate(null);
+        setEndDate(null);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          location: '',
+          referee: '',
+          info: '',
+          competitionClasses: '',
+          competitionType: '',
+        });
 
       console.log('Booking added successfully');
     } catch (error) {

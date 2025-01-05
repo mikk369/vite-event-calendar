@@ -8,42 +8,11 @@ import './mediaQuerys.css'
 // Set the app element for accessibility
 Modal.setAppElement('#root');
 
-const BookingCalendar = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const BookingCalendar = ({events, loading, error}) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [events, setEvents] = useState([]);
   const [openMonthIndex, setOpenMonthIndex] = useState(null);
-
-  useEffect(() => {
-    const fetchEventBookings = async () => {
-      try {
-        const response = await axios.get('https://agilityliit.ee/wp-json/bookings/v1/broneeringud');
-        const eventBookings = response.data.map((booking) => ({
-          title: booking.name,
-          start: booking.startDate,
-          end: booking.endDate,
-          referee: booking.referee,
-          competitionClasses: booking.competitionClasses,
-          competitionType: booking.competitionType,
-          clubCompetitionType: booking.clubCompetitionType,
-          description: booking.info,
-          location: booking.location,
-          status: booking.status
-        }));
-        setEvents(eventBookings);
-      } catch (error) {
-        console.error('Error fetching bookings:', error);
-        setError('Failed to load bookings');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEventBookings();
-  }, []);
 
   const months = [
     'Jaanuar', 'Veebruar', 'Märts', 'Aprill',
@@ -210,7 +179,7 @@ const BookingCalendar = () => {
     }
   }
 
-  //loading div
+  // loading div
   if (loading) {
     return (
       <div className="loading-container">
