@@ -89,23 +89,12 @@ const BookingCalendar = ({events, loading, error}) => {
   };
 
   // Helper function to map events
-  const mapEvents = (events, selectedMonth) => {
-    return events
-      .filter((event) => {
-        const eventStart = new Date(event.start);
-        const eventEnd = adjustEventEnd(event.end);
-        
-        // Check if the event overlaps with the current month
-        return (
-          (eventStart.getFullYear() === selectedYear && eventStart.getMonth() <= selectedMonth) &&
-          (eventEnd.getFullYear() === selectedYear && eventEnd.getMonth() >= selectedMonth)
-        );
-      })
-      .map((event) => ({
+    const mapEvents = (events) => {
+      return events.map((event) => ({
         ...event,
         end: adjustEventEnd(event.end),
       }));
-  };
+    };
 
   //calculate correct start and endtime
   const filterEventsWithDateRange = (events, selectedYear, monthIndex, day) => {
