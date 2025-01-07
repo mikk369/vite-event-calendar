@@ -418,22 +418,27 @@ body.ReactModal__Body--open {
 
 /* SMALL CALENRAD */
 /* Container Style */
-.container {
+.register-container {
   text-align: center;
   padding: 20px;
   border-radius: 8px;
-  max-width: 600px;
+  max-width: 1000px;
   margin: 0 auto;
   font-family: 'Rubik', sans-serif;
   line-height: 1;
   font-weight: 400;
   color: #555;
-  scroll-behavior: smooth;
 }
-.calendar-wrapper {
+
+.calendar-register-wrapper {
   display: flex;
-  justify-content: center;
-  margin-bottom: 3rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.calendar-wrapper {
+ order: 1;
 }
 /* Heading Style */
 .heading-wrapper {

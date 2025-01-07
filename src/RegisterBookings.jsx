@@ -115,118 +115,118 @@ const RegisterBookings = ({updateEvents}) => {
   };
 
   return (
-    <div className='container'>
-      <div className="heading-wrapper">
-        <h3 className='heading'>Registreerimine</h3>
-      </div>
-      <div className='calendar-wrapper'>
-        <ReactCalendar
-          minDate={new Date()}
-          locale='et'
-          view="month"
-          onClickDay={handleDateClick}
-          value={[startDate, endDate]} // Highlight selected date range
-        />
-      </div>
-      {startDate && endDate && error && (
-        <div className='error-container'>
-          <h3 className='error-text'>
-            Alguskuupäev ei saa olla suurem kui lõppkuupäev
-          </h3>
+    <div className='register-container'>
+      <h3 className='heading'>Registreerimine</h3>
+      <div className="calendar-register-wrapper">
+        <div className='calendar-wrapper'>
+          <ReactCalendar
+            minDate={new Date()}
+            locale='et'
+            view="month"
+            onClickDay={handleDateClick}
+            value={[startDate, endDate]} // Highlight selected date range
+          />
         </div>
-      )}
-      {!error && (
-        <form onSubmit={handleSubmit} className='date-info-container'>
-        <p className='date-text'>
-          Valitud alguskuupäev: {startDate && startDate.toLocaleDateString('et-EE')}
-        </p>
-        <p className='date-text'>
-          Valitud lõppkuupäev: {endDate && endDate.toLocaleDateString('et-EE')}
-        </p>
-        <p className='register-lable'>Korraldav klubi</p>
-        <input
-          id="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Korraldav klubi"
-          className='input'
-          required
-        />
-        <p className='register-lable'>E-post</p>
-        <input
-          id="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="E-post"
-          className='input'
-          required
-        />
-        <p className='register-lable'>Telefon</p>
-        <input
-          id="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          placeholder="Phone"
-          className='input'
-          required
-        />
-        <p className='register-lable'>Asukoht</p>
-        <input
-          id="location"
-          value={formData.location}
-          onChange={handleChange}
-          placeholder="Asukoht"
-          className='input'
-          required
-        />
-        <p className='register-lable'>Kohtunik</p>
-        <input
-          id="referee"
-          value={formData.referee}
-          onChange={handleChange}
-          placeholder="Kohtunik"
-          className='input'
-        />
-        <p className='register-lable'>Lisainfo</p>
-        <input
-          id="info"
-          value={formData.info}
-          onChange={handleChange}
-          placeholder="Lisainfo"
-          className='input'
-        />
-        <p className='register-lable'>Võistlusklassid</p>
-        <input
-          id="competitionClasses"
-          value={formData.competitionClasses}
-          onChange={handleChange}
-          placeholder="Võistlusklassid"
-          className='input'
-          required
-        />
-        <p className='register-lable'>Võistlustüüp</p>
-        <select
-          id="competitionType"
-          value={formData.competitionType}
-          onChange={handleChange}
-          className='input'
-          required
-        >
-          <option value="" disabled>Valige võistlustüüp</option> {/* Default placeholder */}
-          <option value="EKL eesti edukamate sportkoerte ja koerajuhtide võistlus">
-            EKL eesti edukamate sportkoerte ja koerajuhtide võistlus
-          </option>
-          <option value="tõuühingu meistrivõitlus">
-            Tõuühingu meistrivõitlus
-          </option>
-          <option value="klubimeistrivõistlus">Klubimeistrivõistlus</option>
-          <option value="muu rahvuslik võistlus">Muu rahvuslik võistlus</option>
-        </select>
-        <button type="submit" className='register-submit-button'>
-          Registreeri
-        </button>
-      </form>
-      )}
+        {startDate && endDate && error && (
+          <div className='error-container'>
+            <h3 className='error-text'>
+              Alguskuupäev ei saa olla suurem kui lõppkuupäev
+            </h3>
+          </div>
+        )}
+        {!error && (
+          <form onSubmit={handleSubmit} className='date-info-container'>
+          <p className='date-text'>
+            Valitud alguskuupäev: {startDate && startDate.toLocaleDateString('et-EE')}
+          </p>
+          <p className='date-text'>
+            Valitud lõppkuupäev: {endDate && endDate.toLocaleDateString('et-EE')}
+          </p>
+          <p className='register-lable'>Korraldav klubi</p>
+          <input
+            id="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Korraldav klubi"
+            className='input'
+            required
+          />
+          <p className='register-lable'>E-post</p>
+          <input
+            id="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="E-post"
+            className='input'
+            required
+          />
+          <p className='register-lable'>Telefon</p>
+          <input
+            id="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Phone"
+            className='input'
+            required
+          />
+          <p className='register-lable'>Asukoht</p>
+          <input
+            id="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="Asukoht"
+            className='input'
+            required
+          />
+          <p className='register-lable'>Kohtunik</p>
+          <input
+            id="referee"
+            value={formData.referee}
+            onChange={handleChange}
+            placeholder="Kohtunik"
+            className='input'
+          />
+          <p className='register-lable'>Lisainfo</p>
+          <input
+            id="info"
+            value={formData.info}
+            onChange={handleChange}
+            placeholder="Lisainfo"
+            className='input'
+          />
+          <p className='register-lable'>Võistlusklassid</p>
+          <input
+            id="competitionClasses"
+            value={formData.competitionClasses}
+            onChange={handleChange}
+            placeholder="Võistlusklassid"
+            className='input'
+            required
+          />
+          <p className='register-lable'>Võistlustüüp</p>
+          <select
+            id="competitionType"
+            value={formData.competitionType}
+            onChange={handleChange}
+            className='input'
+            required
+          >
+            <option value="" disabled>Valige võistlustüüp</option> {/* Default placeholder */}
+            <option value="EKL eesti edukamate sportkoerte ja koerajuhtide võistlus">
+              EKL eesti edukamate sportkoerte ja koerajuhtide võistlus
+            </option>
+            <option value="tõuühingu meistrivõitlus">
+              Tõuühingu meistrivõitlus
+            </option>
+            <option value="klubimeistrivõistlus">Klubimeistrivõistlus</option>
+            <option value="muu rahvuslik võistlus">Muu rahvuslik võistlus</option>
+          </select>
+          <button type="submit" className='register-submit-button'>
+            Registreeri
+          </button>
+        </form>
+        )}
+      </div>
     </div>
   );
 };

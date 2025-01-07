@@ -35,6 +35,14 @@
       .calendar-container{
         gap: 0.5rem;
       }
+      .calendar-register-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+      }
+      .calendar-wrapper {
+        order: -1;
+      }
   }
 @media (max-width: 780px) {
     .modal-content {
@@ -74,6 +82,9 @@
     .fc-toolbar {
         font-size: 0.6rem;
         padding: 0.2rem 0; 
+    }
+    .react-calendar {
+      width: 300px;
     }
   }
   
