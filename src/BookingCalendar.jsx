@@ -20,8 +20,18 @@ const BookingCalendar = ({events, loading, error}) => {
   ];
 
    // Function to handle year navigation
+   const currentYear = new Date().getFullYear();
+
    const changeYear = (increment) => {
-    setSelectedYear((prevYear) => prevYear + increment);
+    setSelectedYear((prevYear) => {
+      const newYear = prevYear + increment;
+
+      if (newYear < currentYear) {
+        return prevYear;
+      }
+
+      return newYear;
+    })
   };
 
     const openModal = (monthIndex) => {
@@ -88,15 +98,22 @@ const BookingCalendar = ({events, loading, error}) => {
     return dayLetters[arg.date.getDay() === 0 ? 6 : arg.date.getDay() - 1];
   };
 
-  // Helper function to map events
-    const mapEvents = (events) => {
-      return events.map((event) => ({
-        ...event,
-        end: adjustEventEnd(event.end),
-      }));
-    };
+  // Helper function to map events, filter by year and adjust end dates
+  const mapEvents = (events, currentYear) => {
+    return events.filter((event) => {
+      const eventStart = new Date(event.start);
+     const eventEnd = new Date(event.end);
 
-  //calculate correct start and endtime
+     //only include events that occur in current year or later
+     return eventStart.getFullYear() >= currentYear || eventEnd.getFullYear() >= currentYear;
+    })
+    .map((event) => ({
+      ...event,
+      end: adjustEventEnd(event.end),
+    }));
+  };
+
+  //calculate correct start and endtime, filter events based on a specific day
   const filterEventsWithDateRange = (events, selectedYear, monthIndex, day) => {
     const mappedEvents = mapEvents(events, monthIndex);
   
@@ -213,7 +230,7 @@ const BookingCalendar = ({events, loading, error}) => {
     <div id="agility-calendar-wrapper">
         {/* Year Navigation */}
         <div className="year-selector">
-          <button onClick={() => changeYear(-1)}><i className="fa-solid fa-arrow-left"></i></button>
+          <button onClick={() => changeYear(-1)} disabled={selectedYear === currentYear}><i className="fa-solid fa-arrow-left"></i></button>
           <span className="year-title">{selectedYear}</span>
           <button onClick={() => changeYear(1)}><i className="fa-solid fa-arrow-right"></i></button>
         </div>
