@@ -71,6 +71,16 @@ function register_booking_endpoints() {
             'permission_callback' => '__return_true', // Replace with the appropriate permission function
         )
     );
+    //GET INSTA FEED 
+    register_rest_route(
+        'bookings/v1',
+        '/insta_feed',
+        array(
+            'methods' => 'GET',
+            'callback' => 'get_insta_feed',
+            'permission_callback' => '__return_true',
+        )
+    );
 }
 
 add_action('rest_api_init', 'register_booking_endpoints');
@@ -502,4 +512,29 @@ function delete_booking($data) {
     }
 
     return new WP_REST_Response(array('status' => 'success', 'message' => 'Booking deleted successfully'), 200);
+}
+
+//Callback function to get instagram feed
+function get_insta_feed() {
+    $access_token = 'IGAAYtgGXD9mpBZAE1NRUVsNm1Wcms5bnBLVDIxRnpPdDlBc1pYX2tLRmtCQjFYdVhlc1ZAwSHo5aTRubk44aGEtWTU5MTlGSktWeVBuS1RWVnppZA2FONFNDenZADQnkzZADhYOElqakFTQ2pZAOHJkcndkWG1DUHlKTE9yaHlabl82awZDZD';
+
+    if (empty($access_token)) {
+        return new WP_Error('missing_token', 'Instagram access token is missing', array('status' => 400));
+    }
+
+    $url = "https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token={$access_token}&limit=18";
+    $response = wp_remote_get($url);
+
+    if (is_wp_error($response)) {
+        return new WP_Error('fetch_error', 'Error fetching Instagram feed', array('status' => 500));
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+
+    if (empty($data['data'])) {
+        return new WP_Error('no_data', 'No data returned from Instagram', array('status' => 404));
+    }
+
+    return rest_ensure_response($data['data']);
 }
