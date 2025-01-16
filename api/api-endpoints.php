@@ -549,5 +549,9 @@ function get_insta_feed() {
         return new WP_Error('no_data', 'No data returned from Instagram', array('status' => 404));
     }
 
-    return rest_ensure_response($data['data']);
+    $filter_data = array_filter($data['data'], function ($post) {
+        return $post['media_type'] !== 'VIDEO';
+    });
+
+    return rest_ensure_response(array_values($filter_data));
 }
