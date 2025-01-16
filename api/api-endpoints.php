@@ -89,7 +89,10 @@ add_action('rest_api_init', 'register_booking_endpoints');
 function get_all_bookings() {
     global $wpdb;
 
-    $results = $wpdb->get_results("SELECT * FROM bookings");
+    $mwvj_bookings = $wpdb->prefix . 'bookings';
+
+    $results = $wpdb->get_results("SELECT * FROM $mwvj_bookings");
+    
     // Check if any results were returned
     if (empty($results)) {
         return new WP_Error('no_bookings', 'No bookings found', array('status' => 404));
@@ -100,6 +103,9 @@ function get_all_bookings() {
 // API endpoint callback functions POST bookings
 function post_booking($data) {
     global $wpdb;
+
+    //add table prefix
+    $mwvj_bookings = $wpdb->prefix . 'bookings';
 
      // Validate required fields
      $required_fields = ['startDate', 'endDate', 'name', 'email', 'phone', 'location', 'competitionType'];
@@ -144,7 +150,7 @@ function post_booking($data) {
     $status = isset($data['isClubEvent']) && $data['isClubEvent'] ? 'CLUBEVENT' : 'PENDING';
 
     $wpdb->insert(
-        'bookings',
+        $mwvj_bookings,
         array(
             'startDate' => $start_date,
             'endDate' => $end_date,
@@ -239,7 +245,8 @@ function post_booking($data) {
     }
 
     //send email to ADMIN
-    $admin_email = 'info@agilityliit.ee';
+    // $admin_email = 'info@agilityliit.ee';
+    $admin_email = 'mikk.ereline@gmail.com';
     $admin_subject = "Uus võistlus registreeritud – kinnitamise ootel.";
     $admin_message = "
         <html>
@@ -336,6 +343,9 @@ function post_booking($data) {
 function patch_booking_info($data) {
     global $wpdb;
 
+     //add table prefix
+     $mwvj_bookings = $wpdb->prefix . 'bookings';
+
      // Use get_params() to get request parameters
      $params = $data->get_params();
 
@@ -353,7 +363,7 @@ function patch_booking_info($data) {
 
     // Update the booking details
     $updated = $wpdb->update(
-        'bookings',  // Use prefix to ensure the correct table
+        $mwvj_bookings,
         array(
             'startdate' => $start_date,
             'enddate' => $end_date,
@@ -384,6 +394,9 @@ function patch_booking_info($data) {
 function update_booking_status($data) {
     global $wpdb;
 
+    //add table prefix
+    $mwvj_bookings = $wpdb->prefix . 'bookings';
+
     // Get the booking ID and the new status from the request
     $params = $data->get_params();  // Use get_params() to get request parameters
     $booking_id = $params['id'];
@@ -392,7 +405,7 @@ function update_booking_status($data) {
     // Check if the booking exists and has a PENDING status
     $booking = $wpdb->get_row(
         $wpdb->prepare(
-            "SELECT * FROM bookings WHERE id = %d AND status = 'PENDING'",
+            "SELECT * FROM $mwvj_bookings WHERE id = %d AND status = 'PENDING'",
             $booking_id
         )
     );
@@ -404,7 +417,7 @@ function update_booking_status($data) {
 
     // Update the status in the database
     $updated = $wpdb->update(
-        'bookings',
+        $mwvj_bookings,
         array( 'status' => $new_status ),  // Set the new status
         array( 'id' => $booking_id ),     // Condition to identify the booking by ID
         array( '%s' ),                   // Format for the new status (string)
@@ -490,11 +503,14 @@ function update_booking_status($data) {
 function delete_booking($data) {
     global $wpdb;
 
+    //add table prefix
+    $mwvj_bookings = $wpdb->prefix . 'bookings';
+
     // Get the booking ID from the URL parameter
     $booking_id = $data['id'];
 
     // Check if the booking exists
-    $booking = $wpdb->get_row($wpdb->prepare("SELECT * FROM bookings WHERE id = %d", $booking_id));
+    $booking = $wpdb->get_row($wpdb->prepare("SELECT * FROM $mwvj_bookings WHERE id = %d", $booking_id));
 
     if (empty($booking)) {
         return new WP_Error('booking_not_found', 'Booking not found.', array('status' => 404));
@@ -502,7 +518,7 @@ function delete_booking($data) {
 
     // Delete the booking
     $deleted = $wpdb->delete(
-        'bookings',
+        $mwvj_bookings,
         array('id' => $booking_id),
         array('%d') // Format for the ID
     );
