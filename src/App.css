@@ -548,7 +548,8 @@ body.ReactModal__Body--open {
 }
 /* //remove questionmark (?)from hovering day  */
 .react-calendar abbr[aria-label] {
-  cursor: pointer; 
+  cursor: pointer;
+  text-decoration: none; 
 }
 
 .react-calendar abbr[aria-label]::after {
