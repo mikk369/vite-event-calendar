@@ -52,4 +52,4 @@ const Main = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById('root')).render(<Main />);
+ReactDOM.createRoot(document.getElementById('booking_calendar_root')).render(<Main />);

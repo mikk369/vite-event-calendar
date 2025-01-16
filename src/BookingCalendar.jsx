@@ -5,7 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import './App.css';
 import './mediaQuerys.css'
 // Set the app element for accessibility
-Modal.setAppElement('#root');
+Modal.setAppElement('#booking_calendar_root');
 
 const BookingCalendar = ({events, loading, error}) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
