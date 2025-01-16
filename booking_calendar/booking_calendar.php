@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Booking Calendars
+Plugin Name: Booking Calendar
 Version: 1.0
 Author: Mikk
 */
@@ -29,7 +29,7 @@ function custom_calendar_enqueue_scripts() {
             filemtime(plugin_dir_path(__FILE__) . 'index.js'),
             true
         );
-        
+
         wp_enqueue_style(
             'custom-calendar-main-css',
             plugin_dir_url(__FILE__) . 'index.css', 
