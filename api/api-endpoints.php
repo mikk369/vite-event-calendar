@@ -245,8 +245,7 @@ function post_booking($data) {
     }
 
     //send email to ADMIN
-    // $admin_email = 'info@agilityliit.ee';
-    $admin_email = 'mikk.ereline@gmail.com';
+    $admin_email = 'info@agilityliit.ee';
     $admin_subject = "Uus võistlus registreeritud – kinnitamise ootel.";
     $admin_message = "
         <html>
@@ -533,19 +532,11 @@ function delete_booking($data) {
 //Callback function to get instagram feed
 function get_insta_feed() {
   //add token to database options table if its not there already
-  if (!get_option('instagram_access_token')) {
-    $access_token = 'IGAAYtgGXD9mpBZAE1NRUVsNm1Wcms5bnBLVDIxRnpPdDlBc1pYX2tLRmtCQjFYdVhlc1ZAwSHo5aTRubk44aGEtWTU5MTlGSktWeVBuS1RWVnppZA2FONFNDenZADQnkzZADhYOElqakFTQ2pZAOHJkcndkWG1DUHlKTE9yaHlabl82awZDZD';
-    $result = add_option('instagram_access_token', $access_token);
+//     $access_token = 'IGAAYtgGXD9mpBZAE1NRUVsNm1Wcms5bnBLVDIxRnpPdDlBc1pYX2tLRmtCQjFYdVhlc1ZAwSHo5aTRubk44aGEtWTU5MTlGSktWeVBuS1RWVnppZA2FONFNDenZADQnkzZADhYOElqakFTQ2pZAOHJkcndkWG1DUHlKTE9yaHlabl82awZDZD';
+//     $result = add_option('instagram_access_token', $access_token);
 
-    if (!$result) {
-        error_log('Failed to add Instagram access token');
-    } else {
-        error_log('Instagram access token added successfully');
-    }
-    } else {
-        // Get the existing token from the database
-        $access_token = get_option('instagram_access_token');
-    }
+    // Get the existing token from the database
+    $access_token = get_option('instagram_access_token');
 
     if (empty($access_token)) {
         return new WP_Error('missing_token', 'Instagram access token is missing', array('status' => 400));
