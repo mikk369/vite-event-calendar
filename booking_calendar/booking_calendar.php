@@ -66,9 +66,6 @@ function custom_calendar_enqueue_scripts() {
 
 add_action('wp_enqueue_scripts', 'custom_calendar_enqueue_scripts');
 
-
-add_action('wp_enqueue_scripts', 'custom_calendar_enqueue_scripts');
-
 function custom_booking_shortcode() {
     return '<div id="booking_calendar_root"></div>';
 }
