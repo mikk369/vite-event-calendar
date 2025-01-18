@@ -17,8 +17,6 @@ function add_cors_headers() {
 }
 add_action('rest_api_init', 'add_cors_headers', 15);
 
-
-
 // registered endpoints 
 function register_booking_endpoints() {
     // GET bookings 
@@ -109,6 +107,7 @@ function post_booking($data) {
 
      // Validate required fields
      $required_fields = ['startDate', 'endDate', 'name', 'email', 'phone', 'location', 'competitionType'];
+     
      foreach ($required_fields as $field) {
          if (empty($data[$field])) {
              return new WP_REST_Response(
@@ -129,6 +128,7 @@ function post_booking($data) {
     // Get the data from the request
     $start_date = sanitize_text_field( $data['startDate'] );
     $end_date = sanitize_text_field( $data['endDate'] );
+    $qual_time = sanitize_text_field( $data['qualTime'] );
     $name = sanitize_text_field( $data['name'] );
     $email = sanitize_email( $data['email'] );
     $phone = sanitize_text_field( $data['phone'] );
@@ -154,188 +154,192 @@ function post_booking($data) {
         array(
             'startDate' => $start_date,
             'endDate' => $end_date,
+            'qualTime' => $qual_time,
             'name' => $name,
             'email' => $email,
             'phone' => $phone,
             'location' => $location,
             'referee' => $referee,
             'info' => $info,
-            'competitionclasses' => $competitionClasses,
-            'competitiontype' => $competitionType,
+            'competitionClasses' => $competitionClasses,
+            'competitionType' => $competitionType,
             'status' => $status, // Set status either PENDING or CLUBEVENT
         )
     );
-    
-    //Send email to CLIENT
-    $subject = "Teie võistlus on edukalt registreeritud!";
-    $client_message = "
-        <html>
-            <body style='background-color: #f0f0f0; margin: 0; padding: 0;'>
-                <table width='100%' cellpadding='0' cellspacing='0' style='font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px 0;'>
-                    <tr>
-                        <td align='center'>
-                            <table width='600' cellpadding='0' cellspacing='0' style='background-color: #ffffff; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);'>
-                                <tr>
-                                    <td align='center' style='padding: 20px 0;'>
-                                        <img src='https://agilityliit.ee/wp-content/uploads/2024/06/agilityliit_logo_halliga.png' alt='Agilityliit Logo' style='max-width: 200px; height: auto;'>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style='padding: 20px;'>
-                                        <h3>$name,</h3>
-                                        <h3>Täname, et registreerisite võistluse.</h3
-                                        <h3>Teie registreeritud võistluse info:</h3>
-                                        <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
-                                            <tr><td><strong>Alguskuupäev:</strong> $start_date</td></tr>
-                                            <tr><td><strong>Lõppkuupäev:</strong> $end_date</td></tr>
-                                            <tr><td><strong>Asukoht:</strong> $location</td></tr>";
 
-                                            if (!empty($referee)) {
+    // Check if its not clubEvent then send mail
+    if(!$data['isClubEvent']) {
+        //Send email to CLIENT
+        $subject = "Teie võistlus on edukalt registreeritud!";
+        $client_message = "
+            <html>
+                <body style='background-color: #f0f0f0; margin: 0; padding: 0;'>
+                    <table width='100%' cellpadding='0' cellspacing='0' style='font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px 0;'>
+                        <tr>
+                            <td align='center'>
+                                <table width='600' cellpadding='0' cellspacing='0' style='background-color: #ffffff; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);'>
+                                    <tr>
+                                        <td align='center' style='padding: 20px 0;'>
+                                            <img src='https://agilityliit.ee/wp-content/uploads/2024/06/agilityliit_logo_halliga.png' alt='Agilityliit Logo' style='max-width: 200px; height: auto;'>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style='padding: 20px;'>
+                                            <h3>$name,</h3>
+                                            <h3>Täname, et registreerisite võistluse.</h3
+                                            <h3>Teie registreeritud võistluse info:</h3>
+                                            <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
+                                                <tr><td><strong>Alguskuupäev:</strong> $start_date</td></tr>
+                                                <tr><td><strong>Lõppkuupäev:</strong> $end_date</td></tr>
+                                                <tr><td><strong>Asukoht:</strong> $location</td></tr>";
+
+                                                if (!empty($referee)) {
+                                                    $client_message .= "
+                                                    <tr>
+                                                        <td>
+                                                            <strong>Kohtunik:</strong> $referee
+                                                        </td>
+                                                    </tr>";
+                                                }
+
+                                                if (!empty($info)) {
+                                                    $client_message .= "
+                                                    <tr>
+                                                        <td>
+                                                            <strong>Lisainfo:</strong> $info
+                                                        </td>
+                                                    </tr>";
+                                                }
+
                                                 $client_message .= "
                                                 <tr>
                                                     <td>
-                                                        <strong>Kohtunik:</strong> $referee
+                                                        <strong>Võistlusklassid:</strong> $competitionClasses
                                                     </td>
-                                                </tr>";
-                                            }
-
-                                            if (!empty($info)) {
-                                                $client_message .= "
+                                                </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>Lisainfo:</strong> $info
+                                                        <strong>Võistlustüüp:</strong> $competitionType
+                                                    </td>
+                                                </tr>
+                                                <p>
+                                                    Teie registreeritud võistlus on ootel, teile saadetakse teavitus kui võistlus on kalendrisse kinnitatud.
+                                                </p>
+                                                <p>
+                                                    Parimate soovidega, Eesti Agilityliit.
+                                                </p>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>";
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+
+        // Check if email was successfully sent
+        if (!wp_mail($email, $subject, $client_message, $headers)) {
+            return new WP_REST_Response(
+                array('error' => 'Broneering salvestati, kuid emaili teavitus ebaõnnestus.'),
+                500
+            );
+        }
+
+        //send email to ADMIN
+        $admin_email = 'info@agilityliit.ee';
+        $admin_subject = "Uus võistlus registreeritud – kinnitamise ootel.";
+        $admin_message = "
+            <html>
+                <body style='background-color: #f0f0f0; margin: 0; padding: 0;'>
+                    <table width='100%' cellpadding='0' cellspacing='0' style='font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px 0;'>
+                        <tr>
+                            <td align='center'>
+                                <table width='600' cellpadding='0' cellspacing='0' style='background-color: #ffffff; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);'>
+                                    <tr>
+                                        <td align='center' style='padding: 20px 0;'>
+                                            <img src='https://agilityliit.ee/wp-content/uploads/2024/06/agilityliit_logo_halliga.png' alt='Agilityliit Logo' style='max-width: 200px; height: auto;'>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style='padding: 20px;'>
+                                            <h3>Registreeritud võistluse andmed:</h3>
+                                            <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Alguskuupäev:</strong> $start_date
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Lõppkuupäev:</strong> $end_date
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Korraldav klubi:</strong> $name
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Email:</strong> $email
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Telefon:</strong> $phone
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Asukoht:</strong> $location
                                                     </td>
                                                 </tr>";
-                                            }
 
-                                            $client_message .= "
-                                            <tr>
-                                                <td>
-                                                    <strong>Võistlusklassid:</strong> $competitionClasses
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <strong>Võistlustüüp:</strong> $competitionType
-                                                </td>
-                                            </tr>
-                                            <p>
-                                                Teie registreeritud võistlus on ootel, teile saadetakse teavitus kui võistlus on kalendrisse kinnitatud.
-                                            </p>
-                                            <p>
-                                                Parimate soovidega, Eesti Agilityliit.
-                                            </p>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </body>
-        </html>";
-    $headers = ['Content-Type: text/html; charset=UTF-8'];
+                                                if (!empty($referee)) {
+                                                    $admin_message .= "
+                                                    <tr>
+                                                        <td>
+                                                            <strong>Kohtunik:</strong> $referee
+                                                        </td>
+                                                    </tr>";
+                                                }
 
-     // Check if email was successfully sent
-     if (!wp_mail($email, $subject, $client_message, $headers)) {
-        return new WP_REST_Response(
-            array('error' => 'Broneering salvestati, kuid emaili teavitus ebaõnnestus.'),
-            500
-        );
+                                                if (!empty($info)) {
+                                                    $admin_message .= "
+                                                    <tr>
+                                                        <td>
+                                                            <strong>Lisainfo:</strong> $info
+                                                        </td>
+                                                    </tr>";
+                                                }
+
+                                                $admin_message .= "
+                                                <tr>
+                                                    <td>
+                                                        <strong>Võistlusklassid:</strong> $competitionClasses
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Võistlustüüp:</strong> $competitionType
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>";
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+        wp_mail($admin_email, $admin_subject, $admin_message, $headers);
+
+        return new WP_REST_Response( array('message' => 'Booking added successfully' ), 200 );
     }
-
-    //send email to ADMIN
-    $admin_email = 'info@agilityliit.ee';
-    $admin_subject = "Uus võistlus registreeritud – kinnitamise ootel.";
-    $admin_message = "
-        <html>
-            <body style='background-color: #f0f0f0; margin: 0; padding: 0;'>
-                <table width='100%' cellpadding='0' cellspacing='0' style='font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px 0;'>
-                    <tr>
-                        <td align='center'>
-                            <table width='600' cellpadding='0' cellspacing='0' style='background-color: #ffffff; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);'>
-                                <tr>
-                                    <td align='center' style='padding: 20px 0;'>
-                                        <img src='https://agilityliit.ee/wp-content/uploads/2024/06/agilityliit_logo_halliga.png' alt='Agilityliit Logo' style='max-width: 200px; height: auto;'>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style='padding: 20px;'>
-                                        <h3>Registreeritud võistluse andmed:</h3>
-                                        <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
-                                            <tr>
-                                                <td>
-                                                    <strong>Alguskuupäev:</strong> $start_date
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <strong>Lõppkuupäev:</strong> $end_date
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <strong>Korraldav klubi:</strong> $name
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <strong>Email:</strong> $email
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <strong>Telefon:</strong> $phone
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <strong>Asukoht:</strong> $location
-                                                </td>
-                                            </tr>";
-
-                                            if (!empty($referee)) {
-                                                $admin_message .= "
-                                                <tr>
-                                                    <td>
-                                                        <strong>Kohtunik:</strong> $referee
-                                                    </td>
-                                                </tr>";
-                                            }
-
-                                            if (!empty($info)) {
-                                                $admin_message .= "
-                                                <tr>
-                                                    <td>
-                                                        <strong>Lisainfo:</strong> $info
-                                                    </td>
-                                                </tr>";
-                                            }
-
-                                            $admin_message .= "
-                                            <tr>
-                                                <td>
-                                                    <strong>Võistlusklassid:</strong> $competitionClasses
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <strong>Võistlustüüp:</strong> $competitionType
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </body>
-        </html>";
-    $headers = array('Content-Type: text/html; charset=UTF-8');
-    wp_mail($admin_email, $admin_subject, $admin_message, $headers);
-
-    return new WP_REST_Response( array('message' => 'Booking added successfully' ), 200 );
 }
 
 // API endpoint callback function PATCH booking INFO
