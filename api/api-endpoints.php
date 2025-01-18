@@ -107,7 +107,7 @@ function post_booking($data) {
 
      // Validate required fields
      $required_fields = ['startDate', 'endDate', 'name', 'email', 'phone', 'location', 'competitionType'];
-     
+
      foreach ($required_fields as $field) {
          if (empty($data[$field])) {
              return new WP_REST_Response(
@@ -147,7 +147,8 @@ function post_booking($data) {
     }
 
     //Default set to PENDING if not CLUBEVENT
-    $status = isset($data['isClubEvent']) && $data['isClubEvent'] ? 'CLUBEVENT' : 'PENDING';
+    $status = isset($data['status']) && $data['status'] === 'CLUBEVENT' ? 'CLUBEVENT' : 'PENDING';
+
 
     $wpdb->insert(
         $mwvj_bookings,
@@ -248,7 +249,8 @@ function post_booking($data) {
         }
 
         //send email to ADMIN
-        $admin_email = 'info@agilityliit.ee';
+        // $admin_email = 'info@agilityliit.ee';
+        $admin_email = 'mikk.ereline@gmail.com';
         $admin_subject = "Uus võistlus registreeritud – kinnitamise ootel.";
         $admin_message = "
             <html>
