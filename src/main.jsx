@@ -20,7 +20,6 @@ const Main = () => {
           referee: booking.referee,
           competitionClasses: booking.competitionClasses,
           competitionType: booking.competitionType,
-          clubCompetitionType: booking.clubCompetitionType,
           description: booking.info,
           location: booking.location,
           status: booking.status

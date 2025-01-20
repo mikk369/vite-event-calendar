@@ -317,8 +317,7 @@ const BookingCalendar = ({events, loading, error}) => {
                       Võistlusklassid: {eventInfo.event.extendedProps.competitionClasses}
                     </p>
                     <p>
-                      Võistlustüüp: {eventInfo.event.extendedProps.status === 'BOOKED' ? 
-                      eventInfo.event.extendedProps.competitionType : eventInfo.event.extendedProps.clubCompetitionType}
+                      Võistlustüüp: {eventInfo.event.extendedProps.competitionType}
                     </p>
                     <p>
                       Asukoht: {eventInfo.event.extendedProps.location}
