@@ -1,4 +1,4 @@
-# React Calendar Plugin for React Applications
+# React Calendar App/Plugin
 
 The React Calendar Plugin is a highly customizable and user-friendly tool for integrating interactive calendars into your React applications. 
 It offers seamless date selection, event display, and integration with APIs for managing bookings, events, and schedules.
@@ -50,6 +50,14 @@ It offers seamless date selection, event display, and integration with APIs for 
    ```bash
    npm start
    ```
+
+### Adding Calendar to Wordpress
+
+1. Upload the plugin directory to the /wp-content/plugins/ directory on your WordPress server.
+ ```bash
+   booking_calendar/booking_calendar.php
+   ```
+2. Go to your WordPress dashboard, navigate to Plugins → Installed Plugins, and activate the plugin.
 
 ### Custom CSS
 Customized styles in Wordpress themes css:
@@ -113,28 +121,7 @@ Customized styles in Wordpress themes css:
   border-radius: 8px;
 }
 ```
-
-## API Integration
-
-Fetch events dynamically from an API and update the calendar:
-
-```javascript
-import React, { useState, useEffect } from 'react';
-const [events, setEvents] = useState([]);
-import axios from 'axios';
-
-useEffect(() => {
-  const fetchEvents = async () => {
-    const response = await axios.get('/api/events');
-    const data = response.data;
-    setEvents(data);
-  };
-
-  fetchEvents();
-}, []);
-```
-
 ---
 
-Enjoy using the React Calendar Plugin to enhance your applications!
+Enjoy using the React Calendar App/Plugin to enhance your applications!
 
