@@ -19,9 +19,17 @@ const RegisterBookings = ({updateEvents}) => {
     competitionClasses: '',
     competitionType: '',
   });
+
+  // set error and remove it after 3 sec
   useEffect(() => {
     if (startDate && endDate && startDate > endDate) {
       setError(true);
+      
+      const timer = setTimeout(() => {
+        setError(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
     } else {
       setError(false);
     }
