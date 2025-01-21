@@ -106,7 +106,7 @@ function post_booking($data) {
     $mwvj_bookings = $wpdb->prefix . 'bookings';
 
      // Validate required fields
-     $required_fields = ['startDate', 'endDate', 'name', 'email', 'phone', 'location', 'competitionType'];
+     $required_fields = ['startDate', 'endDate', 'organizerName', 'name', 'email', 'phone', 'location', 'competitionType'];
 
      foreach ($required_fields as $field) {
          if (empty($data[$field])) {
@@ -129,7 +129,8 @@ function post_booking($data) {
     $start_date = sanitize_text_field( $data['startDate'] );
     $end_date = sanitize_text_field( $data['endDate'] );
     $qual_time = sanitize_text_field( $data['qualTime'] );
-    $name = sanitize_text_field( $data['name'] );
+    $organizerName = sanitize_text_field( $data['organizerName'] );
+    $club_name = sanitize_text_field( $data['name'] );
     $email = sanitize_email( $data['email'] );
     $phone = sanitize_text_field( $data['phone'] );
     $location = sanitize_text_field( $data['location'] );
@@ -156,7 +157,8 @@ function post_booking($data) {
             'startDate' => $start_date,
             'endDate' => $end_date,
             'qualTime' => $qual_time,
-            'name' => $name,
+            'organizerName' => $organizerName,
+            'name' => $club_name,
             'email' => $email,
             'phone' => $phone,
             'location' => $location,
@@ -186,7 +188,7 @@ function post_booking($data) {
                                     </tr>
                                     <tr>
                                         <td style='padding: 20px;'>
-                                            <h3>$name,</h3>
+                                            <h3>$organizerName,</h3>
                                             <h3>Täname, et registreerisite võistluse.</h3
                                             <h3>Teie registreeritud võistluse info:</h3>
                                             <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
@@ -279,7 +281,12 @@ function post_booking($data) {
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>Korraldav klubi:</strong> $name
+                                                        <strong>Peakorraldaja nimi:</strong> $organizerName
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Korraldav klubi:</strong> $club_name
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -356,7 +363,8 @@ function patch_booking_info($data) {
      $booking_id = $params['id'];  // Booking ID (ensure this is passed in the request)
      $start_date = sanitize_text_field( $params['startDate'] );  // Sanitize text input
      $end_date = sanitize_text_field( $params['endDate'] );
-     $name = sanitize_text_field( $params['name'] );
+     $organizerName = sanitize_text_field( $params['organizerName'] );
+     $club_name = sanitize_text_field( $params['name'] );
      $email = sanitize_email( $params['email'] );
      $phone = sanitize_text_field( $params['phone'] );
      $location = sanitize_text_field( $params['location'] );
@@ -371,7 +379,8 @@ function patch_booking_info($data) {
         array(
             'startdate' => $start_date,
             'enddate' => $end_date,
-            'name' => $name,
+            'organizerName' => $organizerName,
+            'name' => $club_name,
             'email' => $email,
             'phone' => $phone,
             'location' => $location,
@@ -382,7 +391,7 @@ function patch_booking_info($data) {
         ),
         array('id' => $booking_id),  // Condition to identify the booking by ID
         array(
-            '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'  // Format for each field
+            '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'  // Format for each field
         ),
         array('%d')  // Format for the booking ID
     );
@@ -434,7 +443,8 @@ function update_booking_status($data) {
 
     // Get client email from the booking
     $client_email = $booking->email;
-    $client_name = $booking->name;
+    $organizer_name = $booking->organizerName;
+    $club_name = $booking->name;
     $start_date = $booking->startDate;
     $end_date = $booking->endDate;
     $location = $booking->location;
@@ -459,12 +469,13 @@ function update_booking_status($data) {
                             </tr>
                             <tr>
                                 <td style='padding: 20px;'>
-                                    <h3>$client_name, teie võistlus on kalendrisse lisatud.</h3>
+                                    <h3>$organizer_name, teie võistlus on kalendrisse lisatud.</h3>
                                     <h3>Võistluse andmed on järgmised:</h3>
                                     <table width='100%' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>
                                         <tr><td><strong>Alguskuupäev:</strong> $start_date</td></tr>
                                         <tr><td><strong>Lõppkuupäev:</strong> $end_date</td></tr>
-                                        <tr><td><strong>Asukoht:</strong> $location</td></tr>";
+                                        <tr><td><strong>Asukoht:</strong> $location</td></tr>
+                                        <tr><td><strong>Korraldav klubi:</strong> $club_name</td></tr>";
 
                                         // Add conditional kohtunik
                                         if (!empty($referee)) {
@@ -481,9 +492,9 @@ function update_booking_status($data) {
                                         $client_status_message .= "
                                         <tr><td><strong>Võistlusklassid:</strong> $competitionClasses</td></tr>
                                         <tr><td><strong>Võistlustüüp:</strong> $competitionType</td></tr>
+                                        <p>Tänud registreerimast!</p>
+                                        <p>Parimate soovidega, Eesti Agilityliit.</p>
                                     </table>
-                                    <p>Tänud registreerimast!</p>
-                                    <p>Parimate soovidega, Eesti Agilityliit.</p>
                                 </td>
                             </tr>
                         </table>
