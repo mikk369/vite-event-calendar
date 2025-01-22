@@ -142,7 +142,7 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
   };
 
   return (
-    <div className='register-container'>
+    <div id='calendar-register' className='register-container'>
       <h3 className='heading'>Registreerimine</h3>
       <div className="calendar-register-wrapper">
         <div className='calendar-wrapper'>
