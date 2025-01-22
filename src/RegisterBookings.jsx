@@ -3,13 +3,14 @@ import ReactCalendar from 'react-calendar';
 import axios from 'axios';
 import './App.css'
 
-const RegisterBookings = ({updateEvents}) => {
+const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getDayBoxClass}) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(false);
   const [formData, setFormData] = useState({
     startDate: '',
     endDate: '',
+    organizerName:'',
     name: '',
     email: '',
     phone: '',
@@ -19,7 +20,7 @@ const RegisterBookings = ({updateEvents}) => {
     competitionClasses: '',
     competitionType: '',
   });
-
+  
   // set error and remove it after 3 sec
   useEffect(() => {
     if (startDate && endDate && startDate > endDate) {
@@ -84,7 +85,8 @@ const RegisterBookings = ({updateEvents}) => {
         'https://agilityliit.ee/wp-json/bookings/v1/lisa_broneering', updatedFormData);
 
         updateEvents({
-          title: updatedFormData.name,
+          organizerName: updatedFormData.organizerName,
+          name: updatedFormData.name,
           start: updatedFormData.startDate,
           end: updatedFormData.endDate,
           referee: updatedFormData.referee,
@@ -98,6 +100,7 @@ const RegisterBookings = ({updateEvents}) => {
         setStartDate(null);
         setEndDate(null);
         setFormData({
+          organizerName: '',
           name: '',
           email: '',
           phone: '',
@@ -122,6 +125,22 @@ const RegisterBookings = ({updateEvents}) => {
     }));
   };
 
+  const tileClassName = ({ date, view }) => {
+    if (view === 'month') {
+      // Extract the year, month, and day from the date
+      const selectedYear = date.getFullYear();
+      const monthIndex = date.getMonth();
+      const day = date.getDate();
+  
+      // Use the existing `filterEventsWithDateRange` function
+      const dayEvents = filterEventsWithDateRange(events, selectedYear, monthIndex, day);
+      // Use your `getDayBoxClass` function to determine the class
+      return getDayBoxClass(day, dayEvents);
+    }
+  
+    return ''; // Return an empty string for tiles without events
+  };
+
   return (
     <div className='register-container'>
       <h3 className='heading'>Registreerimine</h3>
@@ -132,7 +151,8 @@ const RegisterBookings = ({updateEvents}) => {
             locale='et'
             view="month"
             onClickDay={handleDateClick}
-            value={[startDate, endDate]} // Highlight selected date range
+            value={[startDate, endDate]}
+            tileClassName={tileClassName}
           />
         </div>
         {startDate && endDate && error && (
@@ -144,12 +164,24 @@ const RegisterBookings = ({updateEvents}) => {
         )}
         {!error && (
           <form onSubmit={handleSubmit} className='date-info-container'>
-          <p className='date-text'>
-            Valitud alguskuupäev: {startDate && startDate.toLocaleDateString('et-EE')}
-          </p>
-          <p className='date-text'>
-            Valitud lõppkuupäev: {endDate && endDate.toLocaleDateString('et-EE')}
-          </p>
+            <h3 className='register-heading'>Kuupäevad valida kalendrist</h3>
+            <div className="date-text-wrapper">
+              <p className='date-text'>
+                Valitud alguskuupäev: {startDate && startDate.toLocaleDateString('et-EE')}
+              </p>
+              <p className='date-text'>
+                Valitud lõppkuupäev: {endDate && endDate.toLocaleDateString('et-EE')}
+              </p>
+            </div>
+          <p className='register-lable'>Peakorraldaja nimi</p>
+          <input
+            id="organizerName"
+            value={formData.organizerName}
+            onChange={handleChange}
+            placeholder="Peakorraldaja nimi"
+            className='input'
+            required
+          />
           <p className='register-lable'>Korraldav klubi</p>
           <input
             id="name"
