@@ -102,6 +102,16 @@ Customized styles in Wordpress themes css:
     margin-bottom: 8px;
 }
 
+/* in app css its 1 rem but on wordpress neede to add 2rem */
+.date-text-wrapper {
+    margin-bottom: 2rem;
+}
+
+/* remove doted border bottom from reactCalendar numbers  */
+abbr {
+    border-bottom: none !important;
+}
+
 /* register submit button  */
 .register-submit-button {
 	background-color: #0071ff;
