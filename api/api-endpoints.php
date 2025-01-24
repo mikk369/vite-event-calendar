@@ -546,10 +546,13 @@ function delete_booking($data) {
 }
 
 //Callback function to get instagram feed
-function get_insta_feed() {
+function get_insta_feed(WP_REST_Request $request) {
   //add token to database options table if its not there already
 //     $access_token = 'IGAAYtgGXD9mpBZAE1NRUVsNm1Wcms5bnBLVDIxRnpPdDlBc1pYX2tLRmtCQjFYdVhlc1ZAwSHo5aTRubk44aGEtWTU5MTlGSktWeVBuS1RWVnppZA2FONFNDenZADQnkzZADhYOElqakFTQ2pZAOHJkcndkWG1DUHlKTE9yaHlabl82awZDZD';
 //     $result = add_option('instagram_access_token', $access_token);
+
+    // Get the limit from the query parameters or default to 18
+    $limit = $request->get_param('limit') ? (int) $request->get_param('limit') : 18;
 
     // Get the existing token from the database
     $access_token = get_option('instagram_access_token');
@@ -558,7 +561,7 @@ function get_insta_feed() {
         return new WP_Error('missing_token', 'Instagram access token is missing', array('status' => 400));
     }
 
-    $url = "https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token={$access_token}&limit=18";
+    $url = "https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token={$access_token}&limit={$limit}";
     $response = wp_remote_get($url);
 
     if (is_wp_error($response)) {
