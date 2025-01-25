@@ -415,6 +415,10 @@ body.ReactModal__Body--open {
 }
 
 /* Style the grid background color for weekdays */
+.fc-daygrid-dot-event:hover {
+  background-color: #0071ff;; /* Remove the background color change */
+}
+
 .fc .fc-daygrid-day-top {
   display: flex;
   flex-direction: row;
