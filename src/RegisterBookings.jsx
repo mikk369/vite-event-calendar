@@ -241,7 +241,6 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             onChange={handleChange}
             placeholder="Võistlusklassid"
             className='input'
-            required
           />
           <p className='register-lable'>Võistlustüüp</p>
           <select
@@ -259,7 +258,8 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
               Tõuühingu meistrivõitlus
             </option>
             <option value="klubimeistrivõistlus">Klubimeistrivõistlus</option>
-            <option value="muu rahvuslik võistlus">Muu rahvuslik võistlus</option>
+            <option value="muu rahvuslik võistlus">Rahvuslik võistlus</option>
+            <option value="CACIAG">CACIAG</option>
           </select>
           <button type="submit" className='register-submit-button'>
             Registreeri
