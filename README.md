@@ -26,9 +26,6 @@ It offers seamless date selection, event display, and integration with APIs for 
 - **Responsive Design**: Optimized for both desktop and mobile devices.
 - **API Integration**: Easily fetch and display events from external APIs.
 - **CMS admin panel**: Second part of the app is getting all data on admin panel where it can be managed.
- ```bash
- https://github.com/mikk369/reactAdminPage.git
- ```
 
 ## Installation
 
