@@ -178,7 +178,6 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             id="organizerName"
             value={formData.organizerName}
             onChange={handleChange}
-            placeholder="Peakorraldaja nimi"
             className='input'
             required
           />
@@ -187,7 +186,6 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             id="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Korraldav klubi"
             className='input'
             required
           />
@@ -196,7 +194,6 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             id="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="E-post"
             className='input'
             required
           />
@@ -205,7 +202,6 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             id="phone"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="Phone"
             className='input'
             required
           />
@@ -214,7 +210,6 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             id="location"
             value={formData.location}
             onChange={handleChange}
-            placeholder="Asukoht"
             className='input'
             required
           />
@@ -223,7 +218,6 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             id="referee"
             value={formData.referee}
             onChange={handleChange}
-            placeholder="Kohtunik"
             className='input'
           />
           <p className='register-lable'>Lisainfo</p>
@@ -231,7 +225,6 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             id="info"
             value={formData.info}
             onChange={handleChange}
-            placeholder="Lisainfo"
             className='input'
           />
           <p className='register-lable'>Võistlusklassid</p>
@@ -239,7 +232,7 @@ const RegisterBookings = ({updateEvents, events, filterEventsWithDateRange, getD
             id="competitionClasses"
             value={formData.competitionClasses}
             onChange={handleChange}
-            placeholder="Võistlusklassid"
+            placeholder="nt. L - A1, A1... , P - MM, EO kval..."
             className='input'
           />
           <p className='register-lable'>Võistlustüüp</p>
